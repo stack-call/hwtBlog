@@ -244,3 +244,24 @@ hide_table_of_contents: false
 ```
 其中<code>slug</code>指定了URL中本文的的id  
 <code>title</code>指定了侧面显示的文章标题，
+
+## 修改样式
+有时候，我们对原生的颜色或者样式不满意，那么我们就可以自己写样式。  
+在<code>docusaurus.config.js</code>中我们可以看到
+```
+module.exports = {
+  // ...
+  presets: [
+    [
+      'classic',
+      /** @type {import('@docusaurus/preset-classic').Options} */
+        theme: {
+          customCss: require.resolve('./src/css/custom.css'),
+        },
+      }),
+    ],
+  ],
+
+};
+```
+我们可以看到引入了<code>./src/css/custom.css</code>，因此，在该文件中编辑的css样式可以全局通用，因此，我们可以通过Google DevTools查看某个标签的css类，并在<code>./src/css/custom.css</code>中添加修改。如果没有生效可以使用<code>!important</code>提升优先级。

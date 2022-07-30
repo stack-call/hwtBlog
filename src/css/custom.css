@@ -229,7 +229,7 @@ div[class^='announcementBar_'] {
 }
 
 h1 {
-  color: var(--ifm-color-primary) !important;
+  color: white !important;
 }
 
 .footer__col {
@@ -311,4 +311,9 @@ h1 {
 
 .menu__link--active:not(.menu__link--sublist) {
   background-color: var(--ifm-color-primary-bk) !important;
+}
+/*added by myself*/
+.hero__title{
+  font-size: 3rem !important;
+
 }
