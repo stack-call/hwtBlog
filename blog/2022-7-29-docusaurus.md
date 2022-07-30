@@ -215,7 +215,11 @@ module.exports = {
 ```
 其中的<code>"label": "Title"</code>表示的是docs下的文件夹的路径名。要了解这是什么意思，首先要知道，<code>docusaurus</code>会如何生成文档页面。  
 对于直接位于<code>/docs/</code>目录下的文件，例如<code>follow.md</code>，它会生成<code>www.example.com/docs/follow</code>的URL。  
-对于<code>/docs/</code>目录下的文件夹及其文件，例如<code>/docs/test/</code>文件夹下，有一个<code>\_category\_.json</code>文件，其中<code>"label": "support"</code>，那么<code>/docs/test</code>文件夹的概览路径的URL就会显示为<code>www.example.com/docs/category/support</code>，并且这个目录在侧边栏显示的名称也是<code>support</code>，而这个文档目录下的文档例如<code>unknown.md</code>的URL会显示为<code>www.example.com/docs/test/unknown</code>。总结来说就是文件夹(在侧边栏显示的名称及概览)的URL由<code>\_category\_.json</code>中的<code>"label"</code>决定，而文件夹中的文件的URL和原本的路径生成规则相同。
+对于<code>/docs/</code>目录下的文件夹及其文件，例如<code>/docs/test/</code>文件夹下，有一个<code>\_category\_.json</code>文件，其中<code>"label": "support"</code>，那么<code>/docs/test</code>文件夹的概览路径的URL就会显示为<code>www.example.com/docs/category/support</code>，并且这个目录在侧边栏显示的名称也是<code>support</code>，而这个文档目录下的文档例如<code>unknown.md</code>的URL会显示为<code>www.example.com/docs/test/unknown</code>。总结来说就是文件夹(在侧边栏显示的名称及概览)的URL由<code>\_category\_.json</code>中的<code>"label"</code>决定，而文件夹中的文件的URL和原本的路径生成规则相同。  
+:::tip
+同博客页面一样，我们可以通过在文档头加上元信息修改文档在目录中显示的名称和URL。  
+修改方式见博客页面内容。
+:::
 
 ###  博客页面
 相对于文档页面，博客页面没有侧边栏的设置，相对来说比较简单。  
@@ -265,3 +269,7 @@ module.exports = {
 };
 ```
 我们可以看到引入了<code>./src/css/custom.css</code>，因此，在该文件中编辑的css样式可以全局通用，因此，我们可以通过Google DevTools查看某个标签的css类，并在<code>./src/css/custom.css</code>中添加修改。如果没有生效可以使用<code>!important</code>提升优先级。
+
+### 路由总结
+* 对于一个网站页面来说(博客页面，文档页面)，其路由如果不修改其URL就是其储存的默认位置去掉后缀名，其在侧边的显示就是其第一个<code>#</code>一级标题的内容。如果需要修改则可以在文档中的头部加上元信息。
+* 对于一个文件夹页面来说，在目录下的<code>\_category\_.json</code>修改其URL和标题内容。
