@@ -104,6 +104,10 @@ const config = {
                 label: 'BiliBili',
                 href: 'https://space.bilibili.com/500252024 ',
               },
+              {
+                label: 'CSDN',
+                href: 'https://blog.csdn.net/m0_60737243?spm=1000.2115.3001.5343 ',
+              },
             ],
           },
           {
