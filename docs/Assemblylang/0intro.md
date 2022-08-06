@@ -36,3 +36,9 @@ Software Developer’s Manual》及其他书籍中获取，对于AMD64等或其�
 3. 汇编语言也是一种编程语言，只是其语法比较接近机器指令，它也会有编译器提供的独特的，方便编程的内容(就像C语言的预处理器？)，这就是伪指令(directive或叫伪操作)，就是编译器提供的操作，并不是这个语言本身的内容，因为这些本来就不能由语言本身完成(这里指的语言更接近于可以编译生成的机器码)，就像<code>Nasm</code>中的<code>.org</code>，用来指定指令加载地点，在操作系统的引导中非常有用，因为这是汇编语言生产的<code>elf</code>格式的文件中的内容，不可能用编译器修改，而是编译器生成时加上的。  
 
 这些汇编语言的组成讲述。
+:::info
+文档参考书籍及网站链接汇总
+* [NASM Assembly Language Tutorials - asmtutor.com](https://asmtutor.com)
+* [《Assembly Programming and Computer Architecture for Software Engineers (APCASE)》，中文名《汇编程序设计与计算机体系结构——软件工程师教程》的代码仓库](https://github.com/brianrhall/Assembly)
+* [主函数main和程序入口_start](https://blog.csdn.net/m0_55708805/article/details/117827482)
+:::
