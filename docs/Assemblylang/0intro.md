@@ -39,6 +39,7 @@ Software Developer’s Manual》及其他书籍中获取，对于AMD64等或其�
 这些汇编语言的组成讲述。
 :::info
 文档参考书籍及网站链接汇总
+* [ Intel® 64 and IA-32 Architectures Software Developer’s Manual Combined Volumes: 1, 2A, 2B, 2C, 2D, 3A, 3B, 3C, 3D, and 4 ](https://www.intel.cn/content/www/cn/zh/developer/articles/technical/intel-sdm.html?wapkw=intel\ 64)
 * [NASM Assembly Language Tutorials - asmtutor.com](https://asmtutor.com)
 * [《Assembly Programming and Computer Architecture for Software Engineers (APCASE)》，中文名《汇编程序设计与计算机体系结构——软件工程师教程》的代码仓库](https://github.com/brianrhall/Assembly)
 * [主函数main和程序入口_start](https://blog.csdn.net/m0_55708805/article/details/117827482)

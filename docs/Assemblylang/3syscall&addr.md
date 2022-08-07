@@ -67,7 +67,7 @@ leal output, %ecx # 第2个参数，字符串指针
 movl $7, %edx # 第3个参数，写入的字节数
 int $0x80
 //highlight-end
-movq $1, %eax # exit系统调用
+movl $1, %eax # exit系统调用
 xor %edi, %edi # 第1个参数，0，即exit(0)
 int $0x80
 ```
