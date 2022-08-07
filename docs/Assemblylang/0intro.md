@@ -8,6 +8,7 @@ tags: [Assembly]
 本人只了解intel的x86-64，虽然amd64和intel64本质相同，但是还是有微小区别。本人也只使用过intel处理器的电脑运行相关代码，相关知识从《Intel® 64 and IA-32 Architectures
 Software Developer’s Manual》及其他书籍中获取，对于AMD64等或其他架构不太了解，许多内容可能不够全面，本文档主要为本人在学习时整理，如有出错还请见谅。
 
+**注：文档中没有特别说明的寄存器或者内存访问等可能指的是32位情况(因为Intel开发者手册默认就是将32位)**
 
 ## 为什么需要汇编语言
 * 汇编语言可以让我们更好的了解计算机的体系结构，底层原理，如体系结构中的寄存器，CPU等的细节，更加贴近计算机的底层。
@@ -41,4 +42,5 @@ Software Developer’s Manual》及其他书籍中获取，对于AMD64等或其�
 * [NASM Assembly Language Tutorials - asmtutor.com](https://asmtutor.com)
 * [《Assembly Programming and Computer Architecture for Software Engineers (APCASE)》，中文名《汇编程序设计与计算机体系结构——软件工程师教程》的代码仓库](https://github.com/brianrhall/Assembly)
 * [主函数main和程序入口_start](https://blog.csdn.net/m0_55708805/article/details/117827482)
+* [深入理解计算机系统(CSAPP)]
 :::
