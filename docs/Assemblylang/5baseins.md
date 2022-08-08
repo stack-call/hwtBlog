@@ -45,18 +45,29 @@ R: Register，寄存器
 :::tip
 执行完乘法看CPU标志位，对于无符号乘法，若乘积高半段为0，则Carry Flag(CF)为0， 否则为1。对于带符号乘法，如果乘积高半段的每一个二进制都与低半段的最高有效位相同，则CF为0，否则为1。
 :::
+
+带符号整数相乘要通过imul。与mul一样，该指令也有单操作数的版本，在这种情况下，但是其还有双操作数和三操作数的版本。双操作数版本和ADD和SUB相同，双操作数和三操作数都是把结果保存到寄存器中。
 * <code>imul M/R</code>
 * <code>imul R, L/M/R</code>
 * <code>imul R, M/R, L</code>
+
+与mul相似，除法也分为无符号和有符号两种。DIV指令用来执行无符号整数的除法运算，它会把结果以商和余数的形式分别保存。
+![](https://img-blog.csdnimg.cn/aa5e1f6fdba74f888bfa8e48353d9682.png)
+
 * <code>div M/R</code>
 * <code>idiv M/R</code>
+
+无符号逻辑位移，有符号算术位移
 * <code>shl M/R, L</code>
 * <code>shr M/R, L</code>
 * <code>sal M/R, L</code>
 * <code>sar M/R, L</code>
 
 ### 算术运算实例
-虽然现在我们可以输出，但是需要注意的是，输入默认都是字符，按照ASCII字符编码输出，在这个例子中输出The num is K，其中K是我们数字运算的结果，ASCII码为75，与我们的计算结果相同。这里不计算补码的原因是ASCII码无法显示。
+虽然现在我们可以输出，但是需要注意的是，输入默认都是字符，按照ASCII字符编码输出，在这个例子中输出The num is K，其中K是我们数字运算的结果，ASCII码为75，与我们的计算结果相同。这里不计算补码的原因是ASCII码无法显示。只能先这样简单测试结果正确与否。
+:::info
+等我们后面有了输出数字的方法可以再到这里测试一下输出。
+:::
 #### 32位NASM
 ```
 SECTION .data
@@ -117,3 +128,40 @@ _start:
     int $0x80
 
 ```
+
+#### 64位gas
+```
+#compiled by
+#~$as hello64.S -o hello.o
+#~$ld hello.o -o hello
+.section .data
+msg:	.string "Hello\n"
+sum:    .quad 0
+val:    .quad 25
+
+.text
+.globl _start
+_start:
+	pushq %rax # for stack alignment
+
+    movq $0, %rax
+    incq %rax
+    addq $100, %rax
+    subq val, %rax
+    movq %rax, sum
+    decq sum
+    #negq sum
+
+	movq $1, %rax 
+	movq $1, %rdi
+	leaq msg(%rip), %rsi
+	movq $8, %rdx
+	syscall
+
+	# exit(0)
+	movq $60, %rax
+	xor %rdi, %rdi
+	syscall
+```
+
+### 数据寻址
