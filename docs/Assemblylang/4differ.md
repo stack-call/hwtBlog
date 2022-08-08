@@ -3,20 +3,78 @@ title: ATT与Intel汇编格式
 description: 了解两种汇编语言格式的不同
 tags: [Assembly]
 ---
+|Intel语法    | AT&T语法   |
+|    ---      | ---       |
+|   |    |
+## 操作数方向
+|Intel语法    | AT&T语法   |
+|    ---      | ---       |
+|  目的操作数在前，源操作数在后 |  源操作数在前，目的操作数在后  |
 
+## 寄存器
+|Intel语法    | AT&T语法   |
+|    ---      | ---       |
+|  无前缀    |  加上前缀"%"  |
+
+## 立即数
+|Intel语法    | AT&T语法   |
+|    ---      | ---       |
+| 无前缀    | 加上前缀"$"   |
+|十六进制和二进制加上后缀"h"和"b"|十六进制加上前缀"0x"|?
+
+
+
+## 内存操作数
+Base(Reg) + Index(Reg)*Scale(Imm) + Displacement(Imm)   
+
+|Intel语法    | AT&T语法   |
+|    ---      | ---       |
+| Reg<sub>segment</sub>:[Reg<sub>base</sub> + Reg<sub>index</sub>*Imm<sub>scale</sub> + Imm<sub>displacement</sub>] | Reg<sub>segment</sub>:Imm<sub>displacement</sub>(%Reg<sub>base</sub> , %Reg<sub>index</sub> , Imm<sub>scale</sub>)  |
+|简写为 segreg:[base+index*scale+displacement] |简写为 %segreg:displacement(base,index,scale)|
+:::tip
+注意此时ATT语法立即数Imm不需要带$，带$是为了区分地址和内存值，因此在可以区分的时候是不需要的。这一切由编译器区分。
+:::
+
+## 指令操作数字长
+|Intel语法    | AT&T语法   |
+|    ---      | ---       |
+| 使用"byte ptr"或"word ptr"表示  | 根据操作数大小加上下表相应后缀 |
+
+![](https://img-blog.csdnimg.cn/b894fe909c574b318a9db4637bc55a21.png)
+## 特殊指令
+### 绝对转移和绝对调用(jump/call)
+|Intel语法    | AT&T语法   |
+|    ---      | ---       |
+| -  |  操作数加上前缀"*"  |
+
+### 远转移和远调用(jmp/call)
+|Intel语法    | AT&T语法   |
+|    ---      | ---       |
+|  jmp far section:offset |  ljmp $section:$offset  |
+|  call far section:offset |   lcall $section:$offset |
+### 远程返回(ret)
+|Intel语法    | AT&T语法   |
+|    ---      | ---       |
+|ret far stack_adjust|lret stack_adjust|
+
+:::tip
+Linux使用32位线性地址，段基址为0，段长为全部线性空间。因此偏移计算为<code>disp + base + index*scale</code>
+:::
+
+源操作数在前，目的操作数在后
 Intel
 label即为地址本身
 访问地址对应的值需要[label]，还需要dword等单独的大小指示
 num就表示数字
 reg就表示相应寄存器
-目的操作数在前，源操作数在后
+
 
 ATT
 label为地址对应的值，后缀即表明了对应值的大小
 $label为地址本身(jmp?)
 $num表示数字
 %reg表示相应寄存器
-源操作数在前，目的操作数在后
+
 
 
 操作系统中的非常见代码

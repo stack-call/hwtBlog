@@ -10,7 +10,7 @@ L: Literal，立即数
 M: Memory，内存操作数  
 R: Register，寄存器  
 这里我们的指令格式采取Intel格式，即先写目标操作数，再写源操作数，因为Intel开发者手册上的指令集就算按照这种顺序，ATT语法只需要反过来就好了
-## 数据移动
+## 数据移动指令
 <code>mov M/R, L/M/R</code>
 
 要求：   
@@ -26,8 +26,7 @@ R: Register，寄存器
 我们可以发现，仅仅mov指令就是有三种，但是使用汇编语言时我们感受不到其中的不同，因为汇编器帮助我们做了转换。这仅仅是作个示例，之后的很多例子不会再一一贴出其相应的指令。  
 <code>xchg M/R, M/R</code>  
 
-## 算术运算
-### 算术运算指令
+## 算术运算指令
 1. 操作数加1或减1  
 * <code>inc M/R</code>
 * <code>dec M/R</code>
@@ -63,7 +62,31 @@ R: Register，寄存器
 * <code>sal M/R, L</code>
 * <code>sar M/R, L</code>
 
-### 算术运算实例
+符号拓展指令
+* <code>cbw</code>
+* <code>cbd</code>
+* <code>cbq</code>
+* <code>cbo</code>
+![](https://img-blog.csdnimg.cn/a021328333c54a08bce131a821f0bf00.png)
+
+## 数据对齐
+汇编代码的一项优势在于可以写出高效的程序，其中一个重要方面体现在内存访问上。CPU访问偶数地址上的数据比奇数地址上快。例如对应32位系统，如果可以把数据以32位为单元存放，并保证结构体都处在16字节边界上，那么内存访问就比较高效。
+```asm title=不同汇编器的数据对其伪指令
+#gas
+.balign alignment   #.balign 2
+
+;NASM
+SECTION .data               SECTION .bss
+ALIGN alignment  ;ALIGN 2 | ALIGNB alignment
+```
+这是修改位置计数器的不同方法，这些命令会让汇编器计算当前地址，并向前推进直到遇到第一个目标位置。
+:::tip
+在gas中，<code>.align</code>命令和其他架构的表现和x86_64架构可能不同，因此，尽量使用<code>.balign</code>命令。
+:::
+
+## 数组
+
+## 算术运算实例
 虽然现在我们可以输出，但是需要注意的是，输入默认都是字符，按照ASCII字符编码输出，在这个例子中输出The num is K，其中K是我们数字运算的结果，ASCII码为75，与我们的计算结果相同。这里不计算补码的原因是ASCII码无法显示。只能先这样简单测试结果正确与否。
 :::info
 等我们后面有了输出数字的方法可以再到这里测试一下输出。
@@ -163,5 +186,3 @@ _start:
 	xor %rdi, %rdi
 	syscall
 ```
-
-### 数据寻址
