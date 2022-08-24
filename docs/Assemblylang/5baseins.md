@@ -67,6 +67,7 @@ R: Register，寄存器
 * <code>cbd</code>
 * <code>cbq</code>
 * <code>cbo</code>
+
 ![](https://img-blog.csdnimg.cn/a021328333c54a08bce131a821f0bf00.png)
 
 ## 数据对齐
@@ -85,7 +86,45 @@ ALIGN alignment  ;ALIGN 2 | ALIGNB alignment
 :::
 
 ## 数组
+```
+#GAS
+arrayA:  .long 2,4,6,8
+.equ len, (. - arrayA)  #len = 16
 
+;NASM
+arrayA:  DD 2,4,6,8
+len: EQU ($-arrayA)  ;len=16
+```
+利用内存寻址方式的组合，我们可以使用这种方式以一种类似下标的方式访问数组
+
+```asm title=GAS
+leas M, %R
+movs CONSTANT(%R), M/R
+
+leas M, %R
+movs $L/%R, CONSTANT(%R)
+```
+```asm title=NASM
+mov R, [M+CONSTANT]
+
+mov SIZE [M+CONSTANT], L/R
+```
+按照Intel开发者手册中建议的，我们同样可以这样访问数组元素
+```asm title=GAS
+leas M, %R          #leal arrayB, %eax
+movs L, %R          #movl $3, %edx
+movs (%R, %R, L), %R #movl (%eax, %edx, 4), %ebx
+```
+```asm title=NASM
+mov R, L        ;mov edx, 3
+MOV R, [M+R*L]  ;mov eax, [arrayB+edx*4]
+```
+
+## 改变数据大小和类型
+<code>MOVZX R, SIZE [M]/R</code>
+<code>MOVSX R, SIZE [M]/R</code>
+
+zx即Zero eXtend, sx即Sign eXtend
 ## 算术运算实例
 虽然现在我们可以输出，但是需要注意的是，输入默认都是字符，按照ASCII字符编码输出，在这个例子中输出The num is K，其中K是我们数字运算的结果，ASCII码为75，与我们的计算结果相同。这里不计算补码的原因是ASCII码无法显示。只能先这样简单测试结果正确与否。
 :::info

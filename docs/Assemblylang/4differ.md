@@ -61,6 +61,13 @@ Base(Reg) + Index(Reg)*Scale(Imm) + Displacement(Imm)
 Linux使用32位线性地址，段基址为0，段长为全部线性空间。因此偏移计算为<code>disp + base + index*scale</code>
 :::
 
+## 数据类型
+除了程序指令中数据类型的大小，还需要汇编器的伪指令来支持分配不同的数据大小空间。这一点和编译器的实现相关，但是考虑到和上一节的相关段落对应，因此把这一段放到这里。
+![](https://img-blog.csdnimg.cn/a76e27e45d594998855dbb7d8a5171e9.png)
+
+
+
+**是不是可以加一个汇编器章节？**
 源操作数在前，目的操作数在后
 Intel
 label即为地址本身
