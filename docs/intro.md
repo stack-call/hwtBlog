@@ -11,3 +11,4 @@ sidebar_position: 1
 ### [汇编语言](./category/汇编语言)
 ### [编译原理](./category/编译原理)
 ### [操作系统](./category/操作系统)
+### [Rust](./category/Rust)

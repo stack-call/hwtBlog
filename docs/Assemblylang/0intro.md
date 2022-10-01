@@ -44,4 +44,6 @@ Software Developer’s Manual》及其他书籍中获取，对于AMD64等或其�
 * [《Assembly Programming and Computer Architecture for Software Engineers (APCASE)》，中文名《汇编程序设计与计算机体系结构——软件工程师教程》的代码仓库](https://github.com/brianrhall/Assembly)
 * [主函数main和程序入口_start](https://blog.csdn.net/m0_55708805/article/details/117827482)
 * [深入理解计算机系统(CSAPP)]
+* [程序员的自我修养—链接、装载与库]
+* [Professional Assembly Language(汇编语言程序设计)————Richard Blum著，马朝晖 等译]
 :::
