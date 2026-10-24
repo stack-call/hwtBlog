@@ -14,3 +14,4 @@ sidebar_position: 1
 - [Rust](./category/rust)
 - [x86-64 体系结构](./category/architecture)
 - [计算机相关历史发展](./category/history)
+- [AI Agent](./category/agent)
