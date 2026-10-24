@@ -2,6 +2,7 @@
   "label": "x86-64体系结构",
   "position": 5,
   "link": {
-    "type": "generated-index"
+    "type": "generated-index",
+    "slug": "/category/architecture"
   }
 }

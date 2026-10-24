@@ -2,17 +2,14 @@
 title: Docusaurus的使用总结
 description: 使用Docusaurus时的一些总结
 slug: docusaurus-summary
-authors:
-  - name: He Wentao
-    title: Docusaurus的使用总结
-    url: https://github.com/stack-call
-    image_url: https://github.com/stack-call.png
+authors: [hwt]
 tags: [Docusaurus]
 hide_table_of_contents: false
 ---
 
-# Docusaurus的使用总结
+记录一下用 Docusaurus 搭建这个站点时踩过的坑：目录结构、页面跳转、样式覆盖，以及部署时容易忽略的 `baseUrl`。
 
+<!-- truncate -->
 
 ## 安装
 ```javascript

@@ -107,7 +107,7 @@ struct task_struct {
 ```
 
 ### 任务结构体的管理
-对于任务结构体，为了遍历的迅速，Linux0.12使用一个进程结构体指针数组储存任务结构体而非链表。<code>struct task_struct * task[NR_TASKS] = {&(init_task.task), };</code>
+对于任务结构体，为了遍历的迅速，Linux0.12使用一个进程结构体指针数组储存任务结构体而非链表。`struct task_struct * task[NR_TASKS] = {&(init_task.task), };`
     
 ### 任务切换
 任务切换是通过schedule()函数，通过扫描任务结构体指针数组来选择下一个任务，并通过switch()汇编宏进行切换。

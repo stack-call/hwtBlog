@@ -59,7 +59,7 @@ Table 2-3给出了SIB字节256种可能的组合值
 :::
 ## 示例分析
 参考链接
-<https://www.cnblogs.com/dongc/p/10727457.html>
+[cnblogs - 汇编指令与机器码](https://www.cnblogs.com/dongc/p/10727457.html)
 ### 示例1
 add dword ptr ds:[esi+ecx*4],eax的机器码  
 接下来，我们就选择汇编中使用频率非常高的add指令来分析一下汇编指令与二进制机器码的转换  

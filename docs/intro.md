@@ -8,7 +8,9 @@ sidebar_position: 1
 (文档图片从本人CSDN账号搬运，CSDN当图床^_^)
 
 ## 文档分类
-### [汇编语言](./category/汇编语言)
-### [编译原理](./category/编译原理)
-### [操作系统](./category/操作系统)
-### [Rust](./category/Rust)
+- [汇编语言](./category/assembly)
+- [编译原理](./category/compiler)
+- [操作系统](./category/os)
+- [Rust](./category/rust)
+- [x86-64 体系结构](./category/architecture)
+- [计算机相关历史发展](./category/history)

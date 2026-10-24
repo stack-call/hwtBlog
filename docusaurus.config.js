@@ -1,30 +1,31 @@
 // @ts-check
-// Note: type annotations allow type checking and IDEs autocompletion
+// `@type` JSDoc annotations allow editor autocompletion and type checking
+// (when paired with `@ts-check`).
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: '何文涛的个人博客',
   tagline: '学习总结 && 生活随笔',
-  url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'stack-call', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  // GitHub Pages 项目页地址：https://stack-call.github.io/hwtBlog/
+  // url 只写协议 + 域名，baseUrl 必须是 "/<仓库名>/"（大小写要和仓库名一致）
+  url: 'https://stack-call.github.io',
+  baseUrl: '/hwtBlog/',
 
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
+  // GitHub Pages 部署配置
+  organizationName: 'stack-call',
+  projectName: 'hwtBlog',
+  deploymentBranch: 'gh-pages',
+  trailingSlash: false,
+
+  onBrokenLinks: 'throw',
+
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: 'zh-Hans',
+    locales: ['zh-Hans'],
   },
 
   presets: [
@@ -33,21 +34,25 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/stack-call/hwtBlog',
+          sidebarPath: './sidebars.js',
+          editUrl: 'https://github.com/stack-call/hwtBlog/tree/main/',
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/stack-call/hwtBlog',
+          blogTitle: '博客',
+          blogDescription: '学习总结与生活随笔',
+          postsPerPage: 10,
+          feedOptions: {
+            type: ['rss', 'atom'],
+            xslt: true,
+          },
+          editUrl: 'https://github.com/stack-call/hwtBlog/tree/main/',
+          onInlineTags: 'warn',
+          onInlineAuthors: 'warn',
+          onUntruncatedBlogPosts: 'ignore',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: './src/css/custom.css',
         },
       }),
     ],
@@ -56,6 +61,10 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      image: 'img/docusaurus-social-card.jpg',
+      colorMode: {
+        respectPrefersColorScheme: true,
+      },
       navbar: {
         title: '主页',
         logo: {
@@ -64,8 +73,8 @@ const config = {
         },
         items: [
           {
-            type: 'doc',
-            docId: 'intro',
+            type: 'docSidebar',
+            sidebarId: 'docsSidebar',
             position: 'left',
             label: '文档',
           },
@@ -83,30 +92,24 @@ const config = {
           {
             title: 'Docs',
             items: [
-              {
-                label: '文档',
-                to: '/docs/intro',
-              },
-              {
-                label: '博客',
-                to: '/blog',
-              },
+              {label: '文档', to: '/docs/intro'},
+              {label: '博客', to: '/blog'},
             ],
           },
           {
             title: 'Community',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com',
-              },
-              {
                 label: 'BiliBili',
-                href: 'https://space.bilibili.com/500252024 ',
+                href: 'https://space.bilibili.com/500252024',
               },
               {
                 label: 'CSDN',
-                href: 'https://blog.csdn.net/m0_60737243?spm=1000.2115.3001.5343 ',
+                href: 'https://blog.csdn.net/m0_60737243',
+              },
+              {
+                label: 'Stack Overflow',
+                href: 'https://stackoverflow.com',
               },
             ],
           },
@@ -120,13 +123,13 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} He Wentao, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} He Wentao. Built with Docusaurus.`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: prismThemes.github,
+        darkTheme: prismThemes.dracula,
       },
     }),
 };
 
-module.exports = config;
+export default config;

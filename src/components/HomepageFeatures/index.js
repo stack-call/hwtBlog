@@ -1,35 +1,37 @@
-import React from 'react';
 import clsx from 'clsx';
+import Heading from '@theme/Heading';
+import MountainSvg from '@site/static/img/undraw_docusaurus_mountain.svg';
+import TreeSvg from '@site/static/img/undraw_docusaurus_tree.svg';
+import ReactSvg from '@site/static/img/undraw_docusaurus_react.svg';
+
 import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: '体系化的文档',
+    Svg: MountainSvg,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        汇编语言、操作系统、编译原理、x86-64 体系结构等专题，按知识体系整理成文档，
+        而不是零散的笔记。
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: '学习与思考的记录',
+    Svg: TreeSvg,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        博客里放的是成篇的总结与随笔：读书笔记、源码阅读、以及一些还没想明白的问题。
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: '持续更新',
+    Svg: ReactSvg,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        内容基于 Docusaurus 3 构建，推送到 <code>main</code> 分支即自动发布到 GitHub Pages。
       </>
     ),
   },
@@ -42,7 +44,7 @@ function Feature({Svg, title, description}) {
         <Svg className={styles.featureSvg} role="img" />
       </div>
       <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
+        <Heading as="h3">{title}</Heading>
         <p>{description}</p>
       </div>
     </div>

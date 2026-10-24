@@ -320,7 +320,7 @@ displacement is a static offset to the field.
 :::info
 其中偏移中的标量操作数用的是scalar operand，那么这个到底是什么呢？
 以下是从stack overflow中查到的
-<https://stackoverflow.com/questions/57808011/the-scalar-type-additionnal-in-c>
+[Stack Overflow: the scalar type additionnal in C](https://stackoverflow.com/questions/57808011/the-scalar-type-additionnal-in-c)
 :::
 ##### 在64位中指定偏移
 * **Displacement** —— 8-，16-或 32-bit的值
