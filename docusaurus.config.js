@@ -36,12 +36,15 @@ const config = {
         docs: {
           sidebarPath: './sidebars.js',
           editUrl: 'https://github.com/stack-call/hwtBlog/tree/main/',
+          // 让 GitHub 风格的 > [!TIP] 在站点上渲染成提示框
+          beforeDefaultRemarkPlugins: [require('./plugins/remark-gfm-alerts')],
         },
         blog: {
           showReadingTime: true,
           blogTitle: '博客',
           blogDescription: '学习总结与生活随笔',
           postsPerPage: 10,
+          beforeDefaultRemarkPlugins: [require('./plugins/remark-gfm-alerts')],
           feedOptions: {
             type: ['rss', 'atom'],
             xslt: true,

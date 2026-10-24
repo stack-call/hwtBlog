@@ -64,3 +64,28 @@ static/               静态资源（img、.nojekyll 等）
 docusaurus.config.js  站点配置
 sidebars.js           侧边栏配置
 ```
+
+## 写作语法
+
+正文保持纯 Markdown，方便迁移到其他平台（CSDN、语雀、Obsidian、GitHub）。
+
+### 提示框
+
+用 GitHub 的 alert 语法，源文件在任何支持 GFM 的地方都能正常显示：
+
+```markdown
+> [!TIP]
+> 一条提示。
+
+> [!NOTE] 源码版本
+> 标记同一行后面的文字会成为提示框标题。
+
+> [!WARNING]
+> 警告内容。
+```
+
+支持 `NOTE` / `TIP` / `IMPORTANT` / `WARNING` / `CAUTION`，分别渲染成
+备注 / 提示 / 信息 / 注意 / 危险五种样式。
+
+构建时由 `plugins/remark-gfm-alerts.js` 转成 Docusaurus 的 admonition，
+所以**不要**再写 `:::tip` 这种 Docusaurus 专有语法——它拷到别的平台会显示成乱码。
