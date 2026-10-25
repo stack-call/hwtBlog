@@ -1,5 +1,5 @@
 ---
-title: 第十六章：Model Adapter——为什么不能把模型 SDK 直接塞进 Agent Loop？
+title: 第十六章：Model Adapter——更换模型后，Agent 为什么坏了？
 sidebar_label: 第十六章：Model Adapter
 description: 从多模型输出差异推导统一消息、工具事件、流式解析与能力约束
 sidebar_position: 17
@@ -7,6 +7,8 @@ tags: [Agent, Harness, Model-Adapter, OpenCode, Codex]
 ---
 
 # 第十六章：Model Adapter——更换模型后，Agent 为什么坏了？
+
+> 本章接续第十五章：运行时已经能暂停和恢复，却仍然和某一家模型 SDK 绑死。我们从「换了模型，工具调用格式就变了」开始，推导统一事件、能力描述与流式解析这层适配边界。
 
 ## 事故：原来识别的工具调用格式不见了
 
@@ -63,7 +65,7 @@ chunk 2: .py"}
 
 Adapter 应清楚表示“模型生成是否完成”，Agent Loop 在确认完整工具调用前不能触发副作用。对断流、超时和部分响应，需要明确恢复/舍弃策略，而不是随意拼接两个不同请求的输出。
 
-## 真实源码：OpenCode 的统一流事件
+## 源码对照：OpenCode 的统一流事件
 
 [OpenCode `session/llm.ts`](https://github.com/anomalyco/opencode/blob/dev/packages/opencode/src/session/llm.ts) 的流式路径支持不同推理 Runtime，并将输出适配成统一的 `LLMEvent` 流。源码中的注释明确表达了“不同 runtime 暴露相同事件流”的适配边界。
 
@@ -71,17 +73,17 @@ Adapter 应清楚表示“模型生成是否完成”，Agent Loop 在确认完�
 
 这两个项目技术栈不同，但都说明：**模型通讯层拥有自己独立于 Agent Loop 的生命周期和错误处理责任。**
 
-## 模块最终边界
+## 本章归位
 
 | 五个问题 | 回答 |
-|---|---|
+| --- | --- |
 | 是什么 | Adapter 将不同 Provider 的消息与流转换为 Harness 统一协议。 |
 | 为什么需要 | 避免 Runtime 绑定某个厂商的具体响应格式。 |
 | 没有它 | 换模型时修改 Agent Loop，流式片段导致半成品工具调用。 |
 | 实际怎么做 | Request Builder + Capability Profile + Stream Parser + Normalized Events。 |
 | 处于哪里 | Agent Loop 与 Model Provider API 之间。 |
 
-### 实践验证
+## 实践验证
 
 写两个 `FakeProvider`：一个返回完整结构化调用；另一个分三段流式发送同一调用。Harness 对两个 Provider 的工具执行轨迹应一致。再注入第 2 段后断线，验证工具不会执行不完整参数。
 

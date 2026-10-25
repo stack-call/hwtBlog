@@ -1,12 +1,14 @@
 ---
-title: 第十二章：Execution Environment——工具在哪儿执行？
-sidebar_label: 第十二章：Execution Environment
+title: 第十二章：Execution Environment——为什么不能直接调用宿主 Shell？
+sidebar_label: 第十二章：执行环境
 description: 通过意外修改宿主文件、残留进程和测试隔离推导工作区与 Sandbox
 sidebar_position: 13
 tags: [Agent, Harness, Sandbox, Codex, OpenHands]
 ---
 
 # 第十二章：Execution Environment——为什么不能直接调用宿主 Shell？
+
+> 本章接续第十一章：工具调用合法，不代表执行环境安全。一次路径解释错误，就让本该清理测试产物的命令删掉了工作区之外的文件。我们从这类事故出发，推导工作区、Sandbox、超时与资源限制的边界。
 
 ## 事故：修复测试时清理了错误目录
 
@@ -61,24 +63,26 @@ request = ExecRequest(
 result = await sandbox.execute(request)
 ```
 
-## 真实代码去哪里看？
-
-1. [Codex `tools/orchestrator.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/orchestrator.rs)：重点看 `run` 如何协调 Tool Runtime 与批准/隔离执行。这是工具调用与策略的交汇点，而不是某种 OS 沙箱全部逻辑所在的文件。
-2. [Codex `codex-rs` 源码树](https://github.com/openai/codex/tree/main/codex-rs)：继续检索 `sandbox`、`exec` 等模块，区分策略选择与平台级强制执行。
-3. [OpenHands 源码仓库](https://github.com/All-Hands-AI/OpenHands)：从 Runtime 与执行工具入口追踪命令如何进入独立执行环境。具体子目录随版本重构，建议通过仓库搜索定位而不是记死旧路径。
-
-**关键取舍**：Sandbox 的性能、可复用性、文件同步成本、调试便利与安全隔离强度之间存在冲突。对不可信代码，不能用“Prompt 中写禁止删除文件”替代操作系统级控制。
+## 本章归位
 
 | 五个问题 | 回答 |
-|---|---|
+| --- | --- |
 | 是什么 | 工具执行环境承载 Shell、文件、测试和浏览器等操作。 |
 | 为什么需要 | 限定副作用范围、隔离用户任务、管理进程资源。 |
 | 没有它 | 合法 Tool Call 仍可损坏宿主、泄露密钥或跨会话污染。 |
 | 实际怎么做 | Workspace + Sandbox + 超时/资源控制 + 日志和产物管理。 |
 | 处于哪里 | Tool Runtime 之下，与 Policy Engine 共同约束可执行能力。 |
 
-### 实践验证
+## 实践验证
 
 创建两个任务工作区，分别运行会产生 `output.json` 的测试；验证互不可见。再测试符号链接越界、超时子进程清理、网络断开、无写权限情况下的错误回传。实验应在安全的临时目录或容器里进行。
+
+## 源码阅读索引
+
+1. [Codex `tools/orchestrator.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/orchestrator.rs)：重点看 `run` 如何协调 Tool Runtime 与批准/隔离执行。这是工具调用与策略的交汇点，而不是某种 OS 沙箱全部逻辑所在的文件。
+2. [Codex `codex-rs` 源码树](https://github.com/openai/codex/tree/main/codex-rs)：继续检索 `sandbox`、`exec` 等模块，区分策略选择与平台级强制执行。
+3. [OpenHands 源码仓库](https://github.com/All-Hands-AI/OpenHands)：从 Runtime 与执行工具入口追踪命令如何进入独立执行环境。具体子目录随版本重构，建议通过仓库搜索定位而不是记死旧路径。
+
+**关键取舍**：Sandbox 的性能、可复用性、文件同步成本、调试便利与安全隔离强度之间存在冲突。对不可信代码，不能用“Prompt 中写禁止删除文件”替代操作系统级控制。
 
 **下一章的问题**：即使沙箱本身安全，某些真正影响用户或生产环境的操作是否应该先问人？

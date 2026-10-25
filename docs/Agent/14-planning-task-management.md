@@ -1,5 +1,5 @@
 ---
-title: 第十四章：Planning——为什么需要显式任务计划？
+title: 第十四章：Planning——Agent 为什么会一边修 Bug 一边忘记目标？
 sidebar_label: 第十四章：Planning
 description: 从复杂修复任务反复调查推导计划、任务状态、依赖、重规划与适用边界
 sidebar_position: 15
@@ -7,6 +7,8 @@ tags: [Agent, Harness, Planning, Codex, DeepAgents]
 ---
 
 # 第十四章：Planning——Agent 为什么会一边修 Bug 一边忘记目标？
+
+> 本章接续第十三章：Agent 已经能安全执行单个动作，但长任务会跑偏。我们从「修 Bug 修到重构整个订单系统」开始，推导显式任务计划、进度约束与证据驱动的重规划。
 
 ## 事故：修复一半，Agent 开始重构整个订单系统
 
@@ -46,7 +48,7 @@ Agent 原计划先修 `refund.py` 再测 `coupon.py`。但调查发现退款模�
 
 一个复杂任务可以用 DAG 描述步骤依赖；较小任务只需带状态的列表。不要在所有简单问答中强制运行规划步骤：计划本身也会消耗 Token、工具调用和用户注意力。
 
-## 真实源码：Codex 的 `update_plan`
+## 源码对照：Codex 的 `update_plan`
 
 [Codex `tools/handlers/plan_spec.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/handlers/plan_spec.rs) 定义了 `create_update_plan_tool()`。其工具 Schema 要求计划条目包含 `step`、`status`，状态可选：
 
@@ -72,15 +74,17 @@ Goal
 
 计划是“我们打算做什么”的动态模型，而执行历史是“实际发生了什么”的事实记录。两者可以互相校验，不能互相取代。
 
+## 本章归位
+
 | 五个问题 | 回答 |
-|---|---|
+| --- | --- |
 | 是什么 | Planning 是把复杂目标分解为可跟踪子任务的机制。 |
 | 为什么需要 | 防止长任务偏离目标、重复劳动或错过必要验收。 |
 | 没有它 | 进度只能散落在自然语言历史中，协作和恢复困难。 |
 | 实际怎么做 | 任务列表/依赖、状态更新、证据引用、重规划。 |
 | 处于哪里 | Agent Loop 上层的任务状态控制，与 Context/Checkpoint 共享任务信息。 |
 
-### 实践验证
+## 实践验证
 
 给 Agent 一个新增优惠券类型并保持旧接口兼容的任务。中途注入一条“原接口已废弃”的新证据；要求合理重规划，且不能因“计划已完成”就跳过测试。
 

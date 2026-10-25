@@ -1,5 +1,6 @@
 ---
-title: 第六章：Checkpoint 与中断恢复
+title: 第六章：Checkpoint 与中断恢复——历史还在，为什么 Agent 仍然不能继续？
+sidebar_label: 第六章：Checkpoint
 description: 从优惠券 Agent 崩溃开始，推导状态快照、恢复语义、重试与幂等
 sidebar_position: 7
 tags: [Agent, Context, Checkpoint, LangGraph]
@@ -52,7 +53,7 @@ summary_ref: /summaries/coupon-fix-001.md
 
 这就是 **Checkpoint（检查点）** 在此场景中的职责。它不只是摘要文本，而是 *运行时状态的持久化表示*：当前变量、待执行步骤、图的调度信息等。不同框架存储内容不同，不能把示例 YAML 当作 LangGraph 的真实存储格式。
 
-### 到源码里验证：LangGraph 的 Checkpointer
+### 源码对照：LangGraph 的 Checkpointer
 
 [LangGraph Persistence 官方文档](https://docs.langchain.com/oss/python/langgraph/persistence) 展示了 `thread_id` 和 Checkpointer 的配合。关键用法如下（来自官方 API，省略了图构建过程）：
 
@@ -150,7 +151,7 @@ Artifact/Memory ─────┘          ↓
 
 例如恢复后，LLM 并不需要看到 104 轮全部原文；它需要已确认的业务约束、已修改文件、当前测试状态和待执行操作。构建 Context 的过程将在下一章细讲。
 
-## 工程验证：恢复策略要经过故障注入
+## 实践验证：恢复策略要经过故障注入
 
 只测试「正常暂停后恢复」远远不够，至少需要四次故障演练：
 
@@ -159,10 +160,10 @@ Artifact/Memory ─────┘          ↓
 3. **多个并行步骤中某一步失败**：成功步骤的输出是否保留，失败步骤是否按预期重试？LangGraph 有 pending writes 的相关机制，但依然要测试真实图。
 4. **使用旧快照回放**：是否明确限制危险副作用，避免把调试 Replay 当作生产恢复？
 
-### 本章归位
+## 本章归位
 
 | 概念 | 是什么 / 为什么需要 | 没有它会怎样 | 与上下游关系 |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | History | 过去事件的记录 | 找不到详细证据 | 供审计与 Context Builder 使用 |
 | Checkpoint | 可恢复的状态快照 | 无法可靠继续执行 | Runtime 的持久化层 |
 | Idempotency | 让重试不重复产生效果 | 崩溃后可能重复副作用 | Tool / 外部服务边界 |

@@ -1,5 +1,5 @@
 ---
-title: 上下文管理（三）：Agent 的长期记忆
+title: 第三章：Agent 的长期记忆从哪里来？
 sidebar_label: 第三章：长期记忆
 description: 沿着优惠券 Coding Agent 的连续工程故事，从任务结束后的记忆丢失，推导出 Memory 的生命周期、存储隔离、加载、更新、纠错和权限边界，并对照 DeepAgents 与 Codex 源码。
 tags: [Agent]
@@ -293,7 +293,7 @@ Agent 从内部工具发展成多租户服务。用户 A 负责项目 Alpha，�
 
 以前我们只关心“怎么把信息放进上下文”；现在更清楚了：在决定放什么之前，还要决定**谁的信息、属于哪次任务、是否仍然有效、谁能修改，以及何时刷新**。
 
-## 9. 本章用五个问题复盘
+## 本章归位
 
 **是什么？** 长期记忆是将未来可复用的信息持久保存，并通过 Harness 在适当范围、适当时机提供给 Agent 的机制。
 
@@ -305,7 +305,7 @@ Agent 从内部工具发展成多租户服务。用户 A 负责项目 Alpha，�
 
 **处于体系哪里？** Memory 属于 Context Management 的**跨任务信息供给层**。它连接 Storage、Context Builder 与安全边界，但不能取代 History、Compaction 或实时工具查询。
 
-### 一次独立验证：把条件换掉
+### 实践验证：把条件换掉
 
 假设今天要开发的是企业内部的 **SQL 数据分析 Agent**，不同部门使用不同的数据口径。昨天财务部门更改了净收入定义，销售部门仍在使用旧定义。
 
@@ -313,7 +313,7 @@ Agent 从内部工具发展成多租户服务。用户 A 负责项目 Alpha，�
 
 这说明我们真正学会的不是 `AGENTS.md` 这个文件名，而是：**对跨会话知识进行生命周期管理的能力**。
 
-## 本章源码阅读索引
+## 源码阅读索引
 
 建议按下面的顺序读，每次只追一个具体问题，不用一次阅读完整文件：
 
@@ -322,18 +322,8 @@ Agent 从内部工具发展成多租户服务。用户 A 负责项目 Alpha，�
 3. **[DeepAgents `middleware/memory.py`](https://github.com/langchain-ai/deepagents/blob/main/libs/deepagents/deepagents/middleware/memory.py)**：依次看 `before_agent()`、`modify_request()`、`wrap_model_call()`，追踪 Memory 从文件到 System Message 的调用链。
 4. **[Codex `codex-rs/core/src/agents_md.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/agents_md.rs)**：看项目指令发现与拼接，理解层级化项目上下文，而不要把“读取指令”误认为“自动写入记忆”。
 
-## 下一章预告：当多个 Agent 同时工作，Context 应该怎样隔离和传递？
+**下一章的问题**：当多个 Agent 同时工作，Context 应该怎样隔离和传递？
 
 退款项目越来越大：一个 Agent 调查订单，一个 Agent 修改优惠券模块，第三个 Agent 运行测试。主 Agent 如果收集三者全部中间过程，上下文又会膨胀；但如果只收最终一句“完成”，又不知道能否相信结果。
 
 下一章我们会从这个矛盾出发，推导 **Subagent Context Isolation、Handoff Contract、共享工件与结果验证**，并对照真实 Harness 的子 Agent 调度设计。
-
-> [!TIP] 上下文管理与 KV Cache 的关系
-> Context Management 决定模型看什么，KV Cache 决定哪些 Token 的计算可以复用。
->
-> - 上下文长度 ≠ 实际计算量：KV Cache 可以减少重复计算，但不会减少上下文占用的 Token 数量。
-> - 前缀稳定有利于缓存命中：如果每轮只在末尾追加消息，推理引擎通常可以复用已有前缀的 KV Cache。
-> - 修改历史可能导致缓存失效：Compaction、修改 System Prompt 或替换旧消息，会改变 Token 前缀，使变化位置之后的缓存难以复用。
-> - 压缩与缓存需要权衡：Compaction 虽然可能降低缓存命中率，却能减少上下文长度，避免溢出并降低后续推理成本。
->
-> 设计原则：尽量保持前缀稳定、增量追加新消息，在必要时再进行上下文压缩。不要为了缓存命中率牺牲上下文质量。

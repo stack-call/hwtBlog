@@ -1,6 +1,6 @@
 ---
 title: 第十九章：从零实现一个最小 Agent Harness
-sidebar_label: 第十九章：最小 Agent Harness
+sidebar_label: 第十九章：最小 Harness
 description: 以优惠券测试为例整合 Loop、工具、策略、执行、适配、事件与验证
 sidebar_position: 20
 tags: [Agent, Harness, Python, Architecture]
@@ -71,7 +71,7 @@ python mini_agent_harness.py
 我们的最小 Harness 中，各模块对应的真实源码阅读入口：
 
 | 自己实现的边界 | 对照源码 | 真实项目体现的额外复杂度 |
-|---|---|---|
+| --- | --- | --- |
 | `AgentHarness.run` | [Codex `run_turn`](https://github.com/openai/codex/blob/main/codex-rs/core/src/session/turn.rs) | 流式、取消、多 Tool Call、事件流与重试 |
 | `Registry` | [Codex ToolRegistry](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/registry.rs) | Tool Spec、延迟加载、并发属性与路由 |
 | `Policy` | [Codex ToolOrchestrator](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/orchestrator.rs) | Sandbox、批准、工具类型策略 |

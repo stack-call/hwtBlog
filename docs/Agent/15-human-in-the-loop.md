@@ -1,5 +1,5 @@
 ---
-title: 第十五章：Human-in-the-Loop——Agent 如何暂停和恢复？
+title: 第十五章：Human-in-the-Loop——用户不在线时，Agent 怎么等？
 sidebar_label: 第十五章：Human-in-the-Loop
 description: 从退款审批推导持久化中断、审批绑定、恢复与副作用重放
 sidebar_position: 16
@@ -7,6 +7,8 @@ tags: [Agent, Harness, Human-in-the-Loop, LangGraph]
 ---
 
 # 第十五章：Human-in-the-Loop——用户不在线时，Agent 怎么等？
+
+> 本章接续第十四章：有些动作必须等人批准，而人可能几小时后才回来。我们从「审批弹窗一出现，进程就不能停」出发，推导 Interrupt、可持久化的等待状态，以及恢复之后为什么要重新校验。
 
 ## 事故：审批弹窗一出现，进程就不能停
 
@@ -53,7 +55,7 @@ prepare_refund  →  approval_interrupt  →  commit_refund
 
 不能依赖“恢复时从 Python 函数 `interrupt()` 的下一行继续”。在不可重复的副作用之前，应设置安全边界或独立节点。
 
-## 真实源码：LangGraph 的 `interrupt` 与 `Command`
+## 源码对照：LangGraph 的 `interrupt` 与 `Command`
 
 官方 [Interrupts 文档](https://docs.langchain.com/oss/python/langgraph/interrupts) 与 [源码类型定义](https://github.com/langchain-ai/langgraph/blob/main/libs/langgraph/langgraph/types.py) 说明了中断与恢复的契约。
 
@@ -83,15 +85,17 @@ graph.invoke(Command(resume="approve"), config=config)
 
 恢复时还必须重新核对：资源版本、请求有效期、操作身份、幂等键和权限。**审批同意的是某个具体版本的动作，不是永久授权 Agent 在未来做相似事情。**
 
+## 本章归位
+
 | 五个问题 | 回答 |
-|---|---|
+| --- | --- |
 | 是什么 | HITL 是把外部人工决定纳入可持久化的 Agent 控制流。 |
 | 为什么需要 | 审批可能持续很久，Agent 进程不能一直保持活动。 |
 | 没有它 | 掉线丢失等待状态，恢复后容易重复执行或误用旧审批。 |
 | 实际怎么做 | Interrupt + Checkpoint + 审批 ID + Resume + 幂等提交。 |
 | 处于哪里 | Agent Runtime 的流程控制层，与 Policy、Session、Checkpoint 协作。 |
 
-### 实践验证
+## 实践验证
 
 让 Agent 生成一个模拟退款请求并进入等待状态，关闭程序后重新打开，再批准它。测试在这段时间订单发生版本变化、审批重复提交、被拒绝、超时等情况。确保无一次意外退款。
 

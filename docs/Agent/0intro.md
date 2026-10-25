@@ -1,11 +1,12 @@
 ---
-title: Agent 简介
+title: Agent 系列导读
+sidebar_label: 导读
 description: AI Agent（智能体）相关的学习与实践记录
 tags: [Agent]
 sidebar_position: 1
 ---
 
-# 简介
+# Agent 系列导读
 
 本专题记录 AI Agent（智能体）相关的学习与实践。和汇编、操作系统那些专题相比，这里的知识更新得快得多：很多结论只在某个模型版本、某个框架版本下成立，隔几个月可能就变了。因此这里更像是**持续修订的笔记**，而不是结论性的教材。
 

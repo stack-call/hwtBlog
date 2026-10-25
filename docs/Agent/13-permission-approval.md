@@ -1,12 +1,14 @@
 ---
-title: 第十三章：Permission 与 Approval——什么操作需要人批准？
-sidebar_label: 第十三章：Permission 与 Approval
+title: 第十三章：Permission 与 Approval——Sandbox 之外还需要什么？
+sidebar_label: 第十三章：权限与审批
 description: 从自动退款事故推导权限策略、运行时强制检查与审批绑定
 sidebar_position: 14
 tags: [Agent, Harness, Security, Approval, Codex]
 ---
 
 # 第十三章：Permission 与 Approval——Sandbox 之外还需要什么？
+
+> 本章接续第十二章：Sandbox 解决了「能不能执行」，却没有解决「该不该执行」。Agent 完全可以在权限之内发起一笔真实退款。我们从这里推导权限策略、运行时强制检查，以及审批为什么必须绑定到具体参数。
 
 ## 事故：Sandbox 内的命令也可能不合业务要求
 
@@ -44,7 +46,7 @@ return await runtime.execute(tool_name, args)
 
 从产品体验看，应该把“请求用户提升权限”和“直接拒绝”区分开。如果确实不允许提升权限，没必要重复询问用户。
 
-## 真实源码：Codex 的工具编排和 DeepAgents 的策略入口
+## 源码对照：Codex 的工具编排与 DeepAgents 的策略入口
 
 阅读 [Codex `tools/orchestrator.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/orchestrator.rs) 的 `run<Rq, Out, T>(...)`，其泛型工具执行与批准逻辑在一个受控通道内编排。再从工具处理器看它如何构建执行请求。
 
@@ -68,15 +70,17 @@ Tool Call → Policy Decision ┬→ allow → sandbox → execute
                                   verify exact action
 ```
 
+## 本章归位
+
 | 五个问题 | 回答 |
-|---|---|
+| --- | --- |
 | 是什么 | Policy 决定动作可否执行，Approval 将部分决策交给人类。 |
 | 为什么需要 | 真实风险不只来自 OS 权限，也来自业务和用户授权。 |
 | 没有它 | Prompt 被绕过后，Agent 可能执行未经授权的副作用。 |
 | 实际怎么做 | 可信策略引擎 + 审批状态机 + 参数绑定 + 受控执行。 |
 | 处于哪里 | Tool Registry 和 Runtime 之间，与 Sandbox 协同。 |
 
-### 实践验证
+## 实践验证
 
 模拟“查看退款信息”“修改测试文件”“发出真实退款”三种工具；验证允许、拒绝、人工审批。再故意修改审批前后的参数、重复提交审批、审批过期，确保无法执行非原定操作。
 

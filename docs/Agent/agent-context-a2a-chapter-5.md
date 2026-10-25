@@ -1,5 +1,6 @@
 ---
-title: A2A：跨 Agent 系统的上下文交接
+title: 第五章：从 Subagent 到 A2A——当 Agent 不在同一个 Harness 中
+sidebar_label: 第五章：A2A
 description: 通过优惠券退款 Coding Agent 的连续工程故事，理解 A2A 与 Subagent、Context、Task、Artifact 的关系
 tags: [Agent, A2A, Context Engineering]
 sidebar_position: 6
@@ -138,7 +139,7 @@ contextId = refund-audit-session-7
 
 **A2A 标准化「怎样交接」；Context Engineering 决定「交接什么」。**
 
-## 6. 对照真实源码：AgentExecutor 是协议与 Harness 之间的桥
+## 6. 源码对照：AgentExecutor 是协议与 Harness 之间的桥
 
 官方 Python SDK 的核心接口位于：
 
@@ -241,16 +242,18 @@ A2A 官方明确将自己定位为独立 Agent 系统间的通信标准，而不
 5. 以 Artifact 形式收取实际审计报告，并将**摘要和可回读的证据引用**加入主 Agent 的 Working Context。
 6. 验证远程服务与 Artifact 来源，不把对端文字升级为系统指令。
 
-### 本章结论
+### 本章归位
 
 > **Subagent 是一个执行委派机制；A2A 是跨 Agent 系统的协作协议；Context Manager 才负责决定模型看什么。**
 >
 > 它们可以组合使用，但不能互相替代。A2A 提供任务通信的协议骨架，而可靠的跨 Agent 上下文交接依然需要你设计 Handoff 内容、权限和恢复策略。
 
-### 源码阅读入口
+### 源码阅读索引
 
 - [A2A v1.0.1 协议](https://a2a-protocol.org/v1.0.1/specification/)
 - [a2a-python：AgentExecutor](https://github.com/a2aproject/a2a-python/blob/main/src/a2a/server/agent_execution/agent_executor.py)
 - [a2a-python：TaskUpdater](https://github.com/a2aproject/a2a-python/blob/main/src/a2a/server/tasks/task_updater.py)
 - [官方 Python 教程：Agent Executor](https://a2a-protocol.org/latest/tutorials/python/4-agent-executor/)
 - [官方 Task 生命周期](https://a2a-protocol.org/latest/topics/life-of-a-task/)
+
+**下一章的问题**：跨系统交接靠协议，那么一个长任务进程崩溃之后，历史还在，为什么仍然接不上？

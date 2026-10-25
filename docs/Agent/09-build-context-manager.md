@@ -1,5 +1,6 @@
 ---
-title: 第九章：从零实现 Context Manager
+title: 第九章：从零实现 Context Manager——把前八章的机制真正连起来
+sidebar_label: 第九章：Context Manager
 description: 把历史事件、工具输出卸载、压缩视图、检查点与测试整合成最小可运行系统
 sidebar_position: 10
 tags: [Agent, Context, Architecture, Python]
@@ -120,7 +121,7 @@ python examples/mini_context_manager.py
 单元测试至少覆盖：
 
 | 测试 | 预期 |
-|---|---|
+| --- | --- |
 | Compaction 后再查看 History | 原始事件未删除 |
 | 构造压缩后 Context | 只保留 Summary 与 cutoff 之后的事件 |
 | Tool Result 过大 | 全文仍能通过 Artifact 引用找回 |
@@ -131,7 +132,7 @@ python examples/mini_context_manager.py
 接下来最重要的不是再加十个类，而是把这个小实现与真实 Harness 的职责对应起来：
 
 | 教学模块 | 成熟框架中的相近职责 | 还缺少什么 |
-|---|---|---|
+| --- | --- | --- |
 | `events` | OpenHands Event History、Codex Rollout | 多模态、异步、重放语义 |
 | `summary + cutoff` | DeepAgents SummarizationEvent、OpenHands Condensation | 自动摘要、安全截断、摘要版本 |
 | `artifacts` | DeepAgents Backend / File Tools | 权限隔离、远程存储、生命周期 |
@@ -153,7 +154,7 @@ python examples/mini_context_manager.py
 
 你应当能够从这些问题自然推导出 History、Artifact Store、Context Builder、Version/Freshness、Checkpoint、Idempotency 和 Evaluation。能做到这一步，才真正掌握了 Agent Harness 的上下文管理，而不只是记住各类术语。
 
-## 课程结语：用四条边界检验架构
+## 本章归位：用四条边界检验架构
 
 **数据边界**：哪些原始事实被保留、哪些只能通过引用访问？
 
@@ -164,3 +165,5 @@ python examples/mini_context_manager.py
 **验证边界**：完成率、证据保留、恢复能力与成本是否经得起复现？
 
 四条边界清楚之后，DeepAgents、OpenHands、Codex 和 OpenCode 的实现差异就不再是孤立知识，而是不同工程取舍的结果。
+
+**下一章的问题**：上下文管理解决了「模型看什么」，但 Agent 要连续行动，下一步究竟该由谁推动？

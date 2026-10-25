@@ -1,6 +1,6 @@
 ---
-title: 上下文管理（四）：Subagent 的上下文隔离与任务交接
-sidebar_label: 第四章：Subagent 与上下文隔离
+title: 第四章：为什么主 Agent 不应该知道子 Agent 的每一步？
+sidebar_label: 第四章：Subagent
 description: 沿着优惠券 Coding Agent 的工程故事，推导出子 Agent 的上下文隔离、任务交接协议、isolated 与 fork 选择、结果回传和并行协作边界，并对照 DeepAgents 与 Codex 源码。
 tags: [Agent]
 sidebar_position: 5
@@ -320,7 +320,10 @@ Codex 的 `spawn_agent` 相关工具定义中，也明确强调对子任务的�
 | 实际怎么做？ | 用 `task` / `spawn_agent` 委派；选择 `isolated` 或 `fork`；以契约传入必要信息；以结果和证据返回。 |
 | 处于体系哪里？ | 它连接 Context Builder、Tool Runtime、Artifact Store、权限系统与多 Agent 协调器。 |
 
-### 如何验证自己真的掌握了？
+> [!TIP] 本章最重要的一句话
+> **Subagent 不是把工作拆开就结束了，而是要设计两道信息边界：给子 Agent 什么上下文，以及让它向主 Agent 交回什么。** `isolated` 和 `fork` 是两种不同的上下文交接策略；共享文件、权限与最终验收则需要另外管理。
+
+### 实践验证：换一个任务重新推导
 
 拿同一个优惠券项目做两组 A/B 测试：
 
@@ -331,7 +334,7 @@ Codex 的 `spawn_agent` 相关工具定义中，也明确强调对子任务的�
 
 再换一个类似但不同的任务——**修复库存扣减与支付回调的并发一致性问题**：让一个子 Agent 调查事务边界，一个独立审查者找竞争条件，主 Agent 最终整合。能否推导正确的上下文模式、交接信息、写入权限和验收条件，比记住 `fork` 参数更重要。
 
-## 9. 源码阅读索引
+## 源码阅读索引
 
 按“为什么需要它 → 从哪里调用 → 怎样实现 → 代价是什么”的顺序读，而不是逐行读：
 
@@ -344,5 +347,4 @@ Codex 的 `spawn_agent` 相关工具定义中，也明确强调对子任务的�
 | Fork 历史如何进入子线程 | [Codex `agent/control/spawn.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/agent/control/spawn.rs) | `prepare_forked_history()`、`initial_history` |
 | 设计讨论 | [LangChain：Organizing Context in a Multi-Agent Harness](https://www.langchain.com/blog/organizing-context-in-a-multi-agent-harness) | Worker 与 Reviewer 为什么应选不同上下文模式 |
 
-> [!TIP] 本章最重要的一句话
-> **Subagent 不是把工作拆开就结束了，而是要设计两道信息边界：给子 Agent 什么上下文，以及让它向主 Agent 交回什么。** `isolated` 和 `fork` 是两种不同的上下文交接策略；共享文件、权限与最终验收则需要另外管理。
+**下一章的问题**：如果子 Agent 根本不在同一个 Harness 里，这套隔离与交接还成立吗？

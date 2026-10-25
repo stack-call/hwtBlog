@@ -1,12 +1,14 @@
 ---
-title: 第十八章：Observability——如何看见 Agent 实际做了什么？
-sidebar_label: 第十八章：Observability
+title: 第十八章：Observability——Agent 明明回答成功，为什么退款 Bug 还在？
+sidebar_label: 第十八章：可观测性
 description: 从线上退款修复失败推导事件、追踪、指标、回放及隐私控制
 sidebar_position: 19
 tags: [Agent, Harness, Observability, Tracing, Codex]
 ---
 
 # 第十八章：Observability——Agent 明明回答成功，为什么退款 Bug 还在？
+
+> 本章接续第十七章：系统能扩展了，但出问题时看不见内部发生了什么。我们从「用户看到修复完成、生产测试仍然失败」开始，推导事件流、Trace、指标与评测之间的关系。
 
 ## 事故：用户看到“修复完成”，生产测试却仍失败
 
@@ -53,7 +55,7 @@ trace_id (任务)
 
 因此追踪系统至少需要：字段级脱敏、访问控制、数据保留期、Trace 采样策略、敏感 Artifact 的独立授权，以及“记录元数据但不记录原文”的模式。
 
-### 对照真实源码：Codex 的事件与 UI 协议
+### 源码对照：Codex 的事件与 UI 协议
 
 在 [Codex `codex-rs/docs/protocol_v1.md`](https://github.com/openai/codex/blob/main/codex-rs/docs/protocol_v1.md) 中，UI 与核心通过 Submission Queue / Event Queue 交互；`EventMsg` 用于呈现执行过程。具体事件类型可从 [protocol.rs](https://github.com/openai/codex/blob/main/codex-rs/protocol/src/protocol.rs) 追踪。
 
@@ -73,15 +75,17 @@ OpenCode 的 [session/llm.ts](https://github.com/anomalyco/opencode/blob/dev/pac
 
 如果 Agent 将工具调用次数减少一半，却遗漏关键测试，不能说优化成功。可观测性负责看见事实，评测负责判断结果是否满足目标。两者应该关联，却各有边界。
 
+## 本章归位
+
 | 五个问题 | 回答 |
-|---|---|
+| --- | --- |
 | 是什么 | Observability 通过事件、Trace、指标、日志解释系统实际行为。 |
 | 为什么需要 | 无法只凭最终回答定位多轮执行中的故障。 |
 | 没有它 | 失败归因靠猜，性能和成本无法系统优化。 |
 | 实际怎么做 | Trace/Span、事件流、结构化指标、脱敏与查询。 |
 | 处于哪里 | 横切 Agent Loop、Model Adapter、Tools、Context、Session 和 UI。 |
 
-### 实践验证
+## 实践验证
 
 在模拟 Agent 中注入一次“模型返回有效调用、但工具实际超时”的故障。仅通过 Trace 输出定位：哪一轮、哪个工具、为何失败、有没有重试、最终回答是否过早宣称成功。
 

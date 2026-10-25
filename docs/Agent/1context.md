@@ -1,17 +1,16 @@
 ---
-title: 什么是上下文管理
+title: 第一章：一个 Coding Agent 如何被迫学会上下文管理
+sidebar_label: 第一章：上下文管理
 description: 从一个持续运行的 Coding Agent 出发，理解上下文选择、工具输出卸载、对话压缩与历史恢复，并对照开源 Harness 源码
 tags: [Agent]
 sidebar_position: 2
 ---
 
-# 上下文管理
+# 第一章：一个 Coding Agent 如何被迫学会上下文管理
 
+> 本章从一个真实的工程故障开始：一个修复优惠券退款 Bug 的 Coding Agent，在上下文窗口塞满之后开始「失忆」。沿着「故障 → 最小改进 → 新故障 → 源码验证」的路径，我们依次推导出工具输出卸载、对话压缩与历史回读，最后回到开源 Harness 的真实实现。
 
-
-## 第一章：一个 Coding Agent 如何被迫学会上下文管理
-
-### 1. 第 30 次工具调用：历史太长了
+## 1. 第 30 次工具调用：历史太长了
 
 小李正在开发一个 Coding Agent。用户给它的任务是：**修复电商系统中优惠券参与退款时金额计算错误的问题**。
 
@@ -42,7 +41,7 @@ Actual refund:   100
 
 这里诞生了第一种机制——**Sliding Window（滑动窗口裁剪）**：按最近的消息保留一部分历史。它非常便宜，但可能丢掉仍有价值的旧证据。在真正的实现中，还需要按 Token 而不是仅按消息条数估算大小，并保护 Tool Call 与 Tool Result 的配对关系。
 
-### 2. 第一次补救：只保留重要信息行不行？
+## 2. 第一次补救：只保留重要信息行不行？
 
 小李开始给历史信息划分重要程度：用户要求、业务规则、已修改文件优先保留；文件列表、重复日志优先删除。
 
@@ -62,7 +61,7 @@ refund = order.original_amount
 
 > 信息必须保存在模型上下文窗口里，才能算被保留吗？
 
-### 3. 第二次改进：把大块数据移出上下文
+## 3. 第二次改进：把大块数据移出上下文
 
 小李发现，项目源码本来就在文件系统里；完整测试日志也可以写入磁盘。模型看过这些内容，并不意味着之后每轮都要带着它们。
 
@@ -95,7 +94,7 @@ Actual:   100
 
 这个机制叫 **Tool Output Offloading（工具输出卸载）**。
 
-#### 源码对照：DeepAgents 如何做卸载
+### 源码对照：DeepAgents 如何做卸载
 
 阅读这两个文件：
 
@@ -116,7 +115,7 @@ if result is None or result.error:
 
 不过，卸载并不保证零信息损失：模型仍然需要知道何时重新读取，以及如何找到正确的文件。
 
-### 4. 第三次改进：日志卸载以后，为什么还是会满？
+## 4. 第三次改进：日志卸载以后，为什么还是会满？
 
 大型日志的问题解决了。Agent 可以继续运行到一百多轮，但消息历史仍然持续增长：
 
@@ -147,7 +146,7 @@ if result is None or result.error:
 
 **为什么不一开始就只使用摘要？** 因为摘要是有损的：它可能遗漏公式、报错原文、精确标识符或者失败原因。大 Tool Result 更适合先卸载；累积的对话过程才更适合摘要。这是一种有用的工程策略，而不是所有 Harness 必须采用的固定顺序。
 
-#### 源码对照：OpenCode 的摘要写什么？
+### 源码对照：OpenCode 的摘要写什么？
 
 查看 [`packages/core/src/session/compaction.ts`](https://github.com/anomalyco/opencode/blob/dev/packages/core/src/session/compaction.ts) 中的 `SUMMARY_TEMPLATE` 和 `SUMMARY_RULES`。
 
@@ -167,7 +166,7 @@ if result is None or result.error:
 
 同类问题也可以看 [Codex 的 `compact.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/compact.rs)。其中 `build_compacted_history`、`build_compaction_replacement_history` 和 `replace_compacted_history` 体现了将摘要与上下文重建纳入会话生命周期的方式。Codex 的实现会替换当前使用的压缩后工作历史；不要将它简单理解成始终保留一份独立、不可变的 `messages` 数组。
 
-### 5. 第四次改进：摘要忘记了精确细节怎么办？
+## 5. 第四次改进：摘要忘记了精确细节怎么办？
 
 到第 135 轮，出现了新的失败：
 
@@ -204,7 +203,7 @@ Agent 需要回看当时使用的分摊公式和舍入方式。可之前的摘�
 - **Summary**：用较少 Token 保留任务进度和必要事实。
 - **History Recovery**：在需要精确细节时，重新检索原始记录。
 
-#### 源码对照：DeepAgents 如何留下回读入口
+### 源码对照：DeepAgents 如何留下回读入口
 
 在 [DeepAgents `summarization.py`](https://github.com/langchain-ai/deepagents/blob/main/libs/deepagents/deepagents/middleware/summarization.py) 中，重点找：
 
@@ -216,7 +215,7 @@ Agent 需要回看当时使用的分摊公式和舍入方式。可之前的摘�
 
 这一步才让我们明白：**摘要不是历史的替代品，而是历史的一种紧凑表示。**
 
-### 6. 第五次改进：压缩上下文，是否必须修改原始历史？
+## 6. 第五次改进：压缩上下文，是否必须修改原始历史？
 
 现在小李准备整合这些机制，却发现一开始的数据结构有问题：
 
@@ -244,7 +243,7 @@ messages = [summary] + recent_messages
 
 关键并不是工程中绝对不能修改 `messages`，而是**改变工作视图时，不应该无意中丢掉唯一一份可追溯的原始信息**。
 
-#### 源码对照一：DeepAgents 从压缩事件构造有效消息
+### 源码对照一：DeepAgents 从压缩事件构造有效消息
 
 仍看 [`summarization.py`](https://github.com/langchain-ai/deepagents/blob/main/libs/deepagents/deepagents/middleware/summarization.py)。当前 `_get_effective_messages()` 的核心调用是：
 
@@ -257,7 +256,7 @@ return self._apply_event_to_messages(request.messages, event)
 
 `_apply_event_to_messages()` 根据压缩事件中的 `summary_message`、`cutoff_index`，组合出**摘要 + 截断点之后的消息**，还处理异常事件和部分 reasoning block 的清理。由此，完整状态中的消息与本轮模型看到的有效消息不必相同。
 
-#### 源码对照二：OpenHands 把 View 做成明确的抽象
+### 源码对照二：OpenHands 把 View 做成明确的抽象
 
 阅读 [OpenHands SDK 的 `CondenserBase`](https://github.com/OpenHands/software-agent-sdk/blob/main/openhands-sdk/openhands/sdk/context/condenser/base.py)：
 
@@ -311,7 +310,7 @@ OpenHands 还明确要求实现**不要原地修改传入的 `View`**，否则�
 
 这些不是六项平行的功能，而是有限上下文与长任务执行之间的矛盾，推动架构逐层演化出来的结果。
 
-### 五个问题复盘
+## 本章归位
 
 **是什么？** 上下文管理是决定什么信息在何时进入模型，以及原始信息怎样保存、压缩和恢复的机制。
 
@@ -323,7 +322,7 @@ OpenHands 还明确要求实现**不要原地修改传入的 `View`**，否则�
 
 **处于体系哪里？** 它位于 Agent Runtime 的模型调用路径上，连接 Tool Execution、History/State、Backend 和 LLM Request。
 
-## 源码阅读顺序
+## 源码阅读索引
 
 不用逐行啃大文件。带着刚才故事里的问题定位相应函数：
 
@@ -336,7 +335,7 @@ OpenHands 还明确要求实现**不要原地修改传入的 `View`**，否则�
 > [!NOTE] 源码版本
 > 本页按 **2026-10-24** 所核对的公开仓库内容组织。链接指向仍在演进的 `main` / `dev` 分支；后续函数名、默认阈值与文件路径可能变化。以具体仓库版本为准。
 
-## 下一章：Context 没满，Agent 为什么仍然“变笨”？
+**下一章的问题**：Context 没满，Agent 为什么仍然“变笨”？
 
 到第 200 轮，我们的 Agent 终于能控制 Token 预算，也能按需找回历史。然而即使工作上下文没有超限，它仍然开始重复搜索、忽略先前结论，甚至反复修改同一段代码。
 

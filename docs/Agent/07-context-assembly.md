@@ -1,5 +1,6 @@
 ---
-title: 第七章：Context Assembly 与 Token Budget
+title: 第七章：Context Assembly——下一次调用 LLM，究竟要带上什么？
+sidebar_label: 第七章：Context Assembly
 description: 从一次具体的模型请求推导上下文组装器、预算、证据新鲜度和前缀稳定性
 tags: [Agent, Context, Token-Budget, Context-Engineering]
 sidebar_position: 8
@@ -14,7 +15,7 @@ sidebar_position: 8
 优惠券退款 Agent 修好了数据迁移问题，终于准备跑完整回归测试。小李把每类信息的 Token 粗略统计了一遍：
 
 | 信息 | 估算 Token |
-|---|---:|
+| --- | ---: |
 | System / 安全与工作规则 | 3,000 |
 | Tool Schema | 4,000 |
 | AGENTS.md 与项目规范 | 5,000 |
@@ -105,6 +106,16 @@ kind: source_snapshot
 
 这里是**成本优化建议，不是语义正确性的硬规则**。如果关键风险、最新用户指令或高优先级安全约束发生变化，应优先保证模型拿到正确信息，而不是为了命中缓存维持错误前缀。
 
+> [!TIP] 上下文管理与 KV Cache 的关系
+> Context Management 决定模型看什么，KV Cache 决定哪些 Token 的计算可以复用。
+>
+> - 上下文长度 ≠ 实际计算量：KV Cache 可以减少重复计算，但不会减少上下文占用的 Token 数量。
+> - 前缀稳定有利于缓存命中：如果每轮只在末尾追加消息，推理引擎通常可以复用已有前缀的 KV Cache。
+> - 修改历史可能导致缓存失效：Compaction、修改 System Prompt 或替换旧消息，会改变 Token 前缀，使变化位置之后的缓存难以复用。
+> - 压缩与缓存需要权衡：Compaction 虽然可能降低缓存命中率，却能减少上下文长度，避免溢出并降低后续推理成本。
+>
+> 设计原则：尽量保持前缀稳定、增量追加新消息，在必要时再进行上下文压缩。不要为了缓存命中率牺牲上下文质量。
+
 ## 第四次改进：Context Builder 应该位于哪里？
 
 小李考虑在每个 Tool 里分别裁剪自己的输出，结果策略很快散落一地：`read_file` 有一个阈值、测试命令有另一个阈值、摘要又绕过这些规则。
@@ -158,10 +169,10 @@ return result
 
 压缩时要在安全边界处截断，不能只看字符或 Token 下标。[LangChain Summarization Middleware 源码](https://github.com/langchain-ai/langchain/blob/master/libs/langchain_v1/langchain/agents/middleware/summarization.py) 中就有选择安全截断点的相关逻辑。
 
-## 本章的系统位置
+## 本章归位
 
 | 要解决的问题 | 自然产生的设计 | 为什么不是别的机制 |
-|---|---|---|
+| --- | --- | --- |
 | 固定窗口无法容纳所有信息 | Budget Manager | KV Cache 不会扩大逻辑上下文 |
 | 来源多且重要性不同 | Context Assembly | 纯 Sliding Window 不理解来源 |
 | 旧代码误导模型 | Evidence Freshness | 摘要也可能复述过期事实 |

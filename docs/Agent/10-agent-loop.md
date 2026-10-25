@@ -1,5 +1,5 @@
 ---
-title: 第十章：Agent Loop——从 while 循环到可控运行时
+title: 第十章：Agent Loop——Agent 为什么能连续行动？
 sidebar_label: 第十章：Agent Loop
 description: 通过优惠券 Coding Agent 的连续故障，推导模型调用、工具分发、并发、结束、取消与事件流
 sidebar_position: 11
@@ -61,7 +61,7 @@ history.extend(pair_with_call_ids(calls, results))
 
 取消并不一定能够撤销已经发生的数据库写入。因此 Loop 的取消和工具的幂等、补偿机制必须分开讨论。
 
-## 与 Codex 的真实源码对照
+## 源码对照：Codex 的 Agent Loop
 
 阅读 [Codex `session/turn.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/session/turn.rs)，定位 **`run_turn`**。源码函数签名中有：
 
@@ -97,17 +97,17 @@ READY → MODEL_CALL → TOOL_DISPATCH → TOOL_WAIT ┐
 
 每一跳都记录事件、消费时间预算，并在外部副作用边界设置可恢复点。
 
-## 到这里，我们推导出了什么？
+## 本章归位
 
 | 五个问题 | 回答 |
-|---|---|
+| --- | --- |
 | 是什么 | Agent Loop 是驱动模型与工具交替执行的运行时控制流。 |
 | 为什么需要 | 模型输出不是最终答案的同义词；还需要处理调用、重试、取消和结束。 |
 | 没有它 | 容易过早结束、漏掉工具调用、无法取消或留下悬空工具结果。 |
 | 实际怎么做 | 显式状态、结构化输出处理、Tool Registry、事件流、取消和超时。 |
 | 处于哪里 | 位于 Harness 中枢，向上服务 Session/UI，向下调度 Model Adapter 与 Tool Runtime。 |
 
-### 独立验证
+## 实践验证
 
 为一个模拟模型写测试：第一轮同时返回两个只读工具调用，第二轮返回文本加工具调用，第三轮才返回最终回答。要求：不能提前结束；每个 Tool Result 与 `call_id` 对齐；取消中途命令后不再启动新工具。
 

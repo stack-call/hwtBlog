@@ -1,17 +1,16 @@
 ---
-title: 上下文信息利用质量
+title: 第二章：Context 没满，Agent 为什么还是会“变笨”？
+sidebar_label: 第二章：信息利用质量
 description: 从一个持续运行的 Coding Agent 出发，理解上下文选择、工具输出卸载、对话压缩与历史恢复，并对照开源 Harness 源码
 tags: [Agent]
 sidebar_position: 3
 ---
 
-# 上下文管理
+# 第二章：Context 没满，Agent 为什么还是会“变笨”？
 
+> 本章接续第一章：上下文已经装得下了，Agent 却还是「变笨」。我们要把「信息存在」「信息相关」「信息有效」三件事分开，推导上下文清理、工作状态重建与知识按需加载，并给出可以复现的验证方法。
 
-
-## 第二章：Context 没满，Agent 为什么还是会“变笨”？
-
-### 1. 第 200 轮：Token 预算明明足够
+## 1. 第 200 轮：Token 预算明明足够
 
 上一次修复之后，小李的 Coding Agent 已经能卸载测试日志、压缩旧对话，也能通过文件路径找回原始历史。按照 Token 监控，它这次发给模型的上下文只有 **24k / 32k tokens**，还没有达到窗口上限。
 
@@ -31,7 +30,7 @@ sidebar_position: 3
 
 相关研究 [*Lost in the Middle: How Language Models Use Long Contexts*（TACL 2024）](https://aclanthology.org/2024.tacl-1.9/) 发现，在其测试任务中，相关信息处于输入的不同位置时，模型的利用效果可能明显不同，尤其是放在较长上下文中部时。**窗口容量**和**信息使用质量**是两个不同的问题。
 
-### 2. 第一次排查：是不是无关信息太多？
+## 2. 第一次排查：是不是无关信息太多？
 
 小李打开这次 LLM 请求，发现虽然最大的测试日志早已卸载，但仍留着大量小型工具输出：多次 `ls`、重复 `grep`、过时的文件片段、早就分析完成的正常测试结果。
 
@@ -41,7 +40,7 @@ sidebar_position: 3
 
 于是他决定先做一件比“总结所有历史”更便宜的事：**清理旧工具输出，保护近期执行结果和真正需要保留的内容。**
 
-#### 源码对照：OpenCode 怎样清理旧 Tool Result？
+### 源码对照：OpenCode 怎样清理旧 Tool Result？
 
 看 OpenCode 的 [`packages/opencode/src/session/compaction.ts`](https://github.com/anomalyco/opencode/blob/dev/packages/opencode/src/session/compaction.ts)，重点追踪 `prune()` 和消息序列化逻辑。
 
@@ -64,7 +63,7 @@ const output = part.state.time.compacted
 
 我们从这个场景引入一个新概念：**Context Pruning（上下文修剪）**。它处理的是已经存在、但不值得持续占据工作视图的信息；与第一章的 History Preservation 并不矛盾。
 
-### 3. 第二次排查：清理完噪声，为什么还是读错代码？
+## 3. 第二次排查：清理完噪声，为什么还是读错代码？
 
 清理旧日志后，Agent 不再频繁重复搜索；但另一个错误出现了。
 
@@ -99,7 +98,7 @@ refund = order.paid_amount
 
 > 工程取舍：并非每次都重新读取整个仓库。只在关键决策前，重新核实可能已变化的文件、配置和测试状态；历史摘要保留“为什么这样做”，最新工具结果确认“现在是什么”。
 
-### 4. 第三次改进：给模型一份当前工作状态，而不是扔给它一堆记录
+## 4. 第三次改进：给模型一份当前工作状态，而不是扔给它一堆记录
 
 小李进一步检查发现，工作上下文虽然保留了许多“做过什么”，却没有清楚地告诉模型：**哪些问题已经解决，哪些仍待处理，下一步具体该做什么。**
 
@@ -119,7 +118,7 @@ refund = order.paid_amount
 
 这里不必发明一个神秘的“记忆模型”，仍然可以利用第一章已经学过的 Summary 和 Working Context。变化在于：摘要的目标从“缩短历史”进一步转向“维护**可执行的任务状态**”。
 
-#### 源码对照：OpenHands 为什么区分 Event 与 View？
+### 源码对照：OpenHands 为什么区分 Event 与 View？
 
 在 [OpenHands SDK 的 `CondenserBase`](https://github.com/OpenHands/software-agent-sdk/blob/main/openhands-sdk/openhands/sdk/context/condenser/base.py) 中，最重要的是这个接口（真实源码）：
 
@@ -131,7 +130,7 @@ def condense(self, view: View, agent_llm: LLM | None = None) -> View | Condensat
 
 这意味着我们能够在**不改变过去发生过什么**的前提下，调整**当前要让模型关注什么**。当然，框架提供了这个边界，并不会自动保证摘要总是正确；任务状态仍需与实际文件和测试进行核对。
 
-### 5. 第四次改进：知识越多越好吗？
+## 5. 第四次改进：知识越多越好吗？
 
 到这里，Agent 的上下文干净多了。随后团队为它增加了几十个技能文档：Python 测试规范、数据库迁移规范、前端构建指南、退款业务手册……
 
@@ -139,7 +138,7 @@ def condense(self, view: View, agent_llm: LLM | None = None) -> View | Condensat
 
 他改用另一种策略：**先告诉模型有什么能力，再在需要时读取完整说明。**
 
-#### 源码对照：DeepAgents 的 SkillsMiddleware
+### 源码对照：DeepAgents 的 SkillsMiddleware
 
 阅读 [DeepAgents `skills.py`](https://github.com/langchain-ai/deepagents/blob/main/libs/deepagents/deepagents/middleware/skills.py) 的 `SKILLS_SYSTEM_PROMPT` 和 `SkillsMiddleware`。
 
@@ -162,7 +161,7 @@ read_file(对应 SKILL.md)
 
 小李终于发现，上下文管理不只是“满了怎么办”，还包括“**一开始就别把暂时不需要的内容全部放进去**”。
 
-### 6. 怎样证明这次改进真的有效？
+## 6. 怎样证明这次改进真的有效？
 
 现在他手里有几套策略：
 
@@ -184,7 +183,7 @@ read_file(对应 SKILL.md)
 
 不要预先断言 C 必须获胜：Context Builder 的选择也可能删掉关键证据。**压缩率只是手段，任务完成率与可验证性才是结果。**
 
-### 本章复盘：信息的存在、相关与有效是三回事
+## 本章归位：信息的存在、相关与有效是三回事
 
 **是什么？** Context Rot 泛指长上下文中信息利用质量下降的现象；它与 Context Overflow 不同，也不是唯一的故障原因。
 
@@ -198,14 +197,14 @@ read_file(对应 SKILL.md)
 
 到这里，我们的 Context Builder 已经不再是一个单纯的 Token 截断函数，而是一个具有**选择、验证、组织、按需加载**能力的工作视图构造器。
 
-### 本章源码阅读路线
+## 源码阅读索引
 
 1. OpenCode [`session/compaction.ts`](https://github.com/anomalyco/opencode/blob/dev/packages/opencode/src/session/compaction.ts)：看 `prune()`，理解为什么清理旧工具输出与摘要压缩不是同一操作。
 2. OpenHands [`condenser/base.py`](https://github.com/OpenHands/software-agent-sdk/blob/main/openhands-sdk/openhands/sdk/context/condenser/base.py)：看 `View | Condensation`，理解为什么可以重新组织模型输入而不把它等同于原始事件历史。
 3. DeepAgents [`middleware/skills.py`](https://github.com/langchain-ai/deepagents/blob/main/libs/deepagents/deepagents/middleware/skills.py)：看 `SKILLS_SYSTEM_PROMPT`，理解“元信息先进入、完整知识按需进入”的策略。
 4. 学术对照：[Lost in the Middle](https://aclanthology.org/2024.tacl-1.9/)：理解为什么要实际测量长上下文的信息利用能力。
 
-## 下一章：任务结束以后，Agent 应该记住什么？
+**下一章的问题**：任务结束以后，Agent 应该记住什么？
 
 优惠券 Bug 最终修好了。第二天，新用户让 Agent 修复另一个订单问题。它需要沿用项目退款规范，却不应该把昨天的完整工具调用全部塞到今天的对话里。
 

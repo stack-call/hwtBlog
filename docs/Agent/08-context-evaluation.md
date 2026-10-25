@@ -1,5 +1,6 @@
 ---
-title: 第八章：Context Evaluation
+title: 第八章：Context Evaluation——压缩率提高了，为什么修 Bug 的成功率反而下降？
+sidebar_label: 第八章：Context Evaluation
 description: 用复现任务、反事实测试与故障注入衡量上下文压缩和恢复的真实效果
 sidebar_position: 9
 tags: [Agent, Evaluation, Context, Benchmark]
@@ -26,7 +27,7 @@ tags: [Agent, Evaluation, Context, Benchmark]
 他建立了最小的评测集，不让模型凭记忆来答抽象问题，而是在同一个代码仓库里给它真实任务：
 
 | 任务 | 初始条件 | 验证方式 |
-|---|---|---|
+| --- | --- | --- |
 | A：整单退款 | 优惠券抵扣 20 元 | 相关单测通过 |
 | B：部分退款 | 两种商品、比例分摊 | 精度与舍入单测通过 |
 | C：跨轮回忆 | 早期 History 才有业务规则 | 修复仍遵守该规则 |
@@ -56,7 +57,7 @@ B 的完成率更高，但它也运行了更多工具调用；是 Context 策略
 因此不能只报告一个分数，还需要区分四类指标：
 
 | 维度 | 建议指标 | 用来识别什么 |
-|---|---|---|
+| --- | --- | --- |
 | 任务效果 | task success / 回归测试通过率 | 最终修复质量 |
 | 上下文质量 | 关键事实保留率、错误旧事实引用次数 | Summary 是否丢失或误导 |
 | 恢复能力 | 历史证据找回率、恢复后任务完成率 | Context Recovery 是否真正生效 |
@@ -113,7 +114,7 @@ Checkpoint 保存中断
 为了排除其他变化，小李开始用 **Ablation（消融实验）**：
 
 | 实验 | 唯一改变的条件 | 想验证的假设 |
-|---|---|---|
+| --- | --- | --- |
 | Base | 不压缩、合理窗口内运行 | 能达到的任务质量基线 |
 | B | 仅开启 Tool Offloading | 大输出是否是主要成本来源 |
 | C | B + Conversation Summary | 摘要是否影响正确性 |
@@ -155,7 +156,7 @@ assert no_cross_thread_leakage(run)
 ```
 
 | 问题 | 产生的机制 | 在体系中的位置 |
-|---|---|---|
+| --- | --- | --- |
 | 压缩率高但 Bug 没修好 | Outcome-based Evaluation | 整体效果的最终约束 |
 | 不知道摘要漏了什么 | Evidence-based Checks | Compression 与 Recovery 的测试 |
 | 不知道改动是否真的有效 | Ablation | Context 策略选择 |

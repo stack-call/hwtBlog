@@ -1,5 +1,5 @@
 ---
-title: 第十一章：Tool System——模型说要运行工具之后发生了什么？
+title: 第十一章：Tool System——为什么不能直接执行模型返回的命令？
 sidebar_label: 第十一章：Tool System
 description: 从读取源码到工具注册、参数校验、执行路由、结果配对及错误隔离
 sidebar_position: 12
@@ -7,6 +7,8 @@ tags: [Agent, Harness, Tools, Codex]
 ---
 
 # 第十一章：Tool System——为什么不能直接执行模型返回的命令？
+
+> 本章接续第十章：Agent Loop 能转起来了，但模型返回的工具名未必存在、参数未必合法、执行未必安全。我们从一个 `search_repository` 的调用失败开始，推导 Tool Registry、参数校验、执行路由与结果配对的分层。
 
 ## 新故障：模型调用了一个不存在的工具
 
@@ -64,7 +66,7 @@ class ToolResult:
 
 这里还要考虑重复请求：因网络抖动重试一个查询通常问题不大；但重复执行“发放退款”就可能产生实际损失。重试策略应由工具语义决定，而不应所有异常一律重试。
 
-## 真实代码：Codex 的 Registry 和 Dispatch
+## 源码对照：Codex 的 Registry 与 Dispatch
 
 在 [Codex `tools/registry.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/tools/registry.rs) 中，真实类型的关键字段是：
 
@@ -86,15 +88,17 @@ pub struct ToolRegistry {
 
 因此 Registry 负责“**有什么工具**”，Policy 负责“**能否运行**”，Runtime 负责“**如何运行**”，Result Adapter 负责“**怎么回传**”。
 
+## 本章归位
+
 | 五个问题 | 回答 |
-|---|---|
+| --- | --- |
 | 是什么 | 工具系统把模型的结构化调用转为受控执行。 |
 | 为什么需要 | 统一名称解析、Schema、策略、路由和工具结果。 |
 | 没有它 | `if/elif` 膨胀，参数错误晚暴露，工具之间权限和返回值不一致。 |
 | 实际怎么做 | Registry + Validator + Policy + Executor + Result Normalizer。 |
 | 处于哪里 | Agent Loop 与外部系统之间的边界。 |
 
-### 实践验证
+## 实践验证
 
 模拟三个工具：只读查询、写文件、退款请求。输入非法 JSON、未知工具和重复退款 `operation_id`，验证报错可读、写入不会越权、重复退款不会重复产生副作用。注意“幂等”需要外部服务配合，不能只靠本地 Registry。
 
