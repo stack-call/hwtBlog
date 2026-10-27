@@ -332,7 +332,7 @@ hook 是另一类东西：**它不提高概率，它取消可能性。**
 
 前者必须是 hook，后者写在文档里完全够用。
 
-这条判断标准其实和上一篇《Hook、Middleware 与 Callback》里的判据是同一个东西：
+这条判断标准其实和前面那篇《Hook、Middleware 与 Callback》里的判据是同一个东西：
 
 > 看它有没有收到 `handler`。
 >

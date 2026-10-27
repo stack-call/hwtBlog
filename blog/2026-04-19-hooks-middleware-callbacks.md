@@ -656,4 +656,4 @@ Codex 的 `PreToolUseOutcome` 同时有 `updated_input` 和 `should_block`，两
 - LangChain `AgentMiddleware` 的方法定义：[`agents/middleware/types.py`](https://github.com/langchain-ai/langchain/blob/master/libs/langchain_v1/langchain/agents/middleware/types.py)
 - OpenCode 插件文档：[Plugins](https://opencode.ai/docs/plugins/)
 
-源码以 2026-10-25 读到的版本为准。这几个项目的扩展接口改动都很快，路径和字段名可能已经变了。
+源码以 2026 年 4 月读到的版本为准。这几个项目的扩展接口改动都很快，路径和字段名可能已经变了。
