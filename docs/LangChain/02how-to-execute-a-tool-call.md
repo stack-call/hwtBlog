@@ -11,7 +11,7 @@ tags:
   - Python
 ---
 
-> 本文是「LangChain × LangGraph 源码精读」的第 01 章。[先读系列引言](/langchain-langgraph-source/introduction)。文件名采用博客发布序号 `02`，所以是 `02how-to-execute-a-tool-call.md`。
+> 本文是「LangChain × LangGraph 源码精读」的第 01 章。[先读系列引言](./01langchain-langgraph-source-introduction-v2.md)。文件名采用博客发布序号 `02`，所以是 `02how-to-execute-a-tool-call.md`。
 >
 > **本章只回答一个问题：当模型说“运行测试”时，究竟是谁让 `pytest` 真正运行起来？** 我们暂时不研究模型为什么决定运行测试，也不研究测试结束后怎样自动进入下一轮；那是下一章的任务。
 

@@ -12,7 +12,7 @@ tags:
   - Python
 ---
 
-> 本文是「LangChain × LangGraph 源码精读」的**第 04 章**，对应文件 `05how-to-build-stategraph.md`。建议先阅读[第 03 章：手写 Agent Loop 已经能工作，为什么还需要 create_agent？](/langchain-langgraph-source/how-to-create-agent)。
+> 本文是「LangChain × LangGraph 源码精读」的**第 04 章**，对应文件 `05how-to-build-stategraph.md`。建议先阅读[第 03 章：手写 Agent Loop 已经能工作，为什么还需要 create_agent？](./04how-to-create-agent.md)。
 >
 > **本章只有一个主问题：** 已经知道 `create_agent()` 会创建图，但我们究竟怎样把“调用模型、执行工具、决定下一步”交给 `StateGraph` 表达？它在构建时保存了什么，又为什么不在注册节点时直接执行？
 

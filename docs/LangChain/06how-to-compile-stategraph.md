@@ -13,7 +13,7 @@ tags:
   - Python
 ---
 
-> 本文是「LangChain × LangGraph 源码精读」的**第 05 章**，对应文件 `06how-to-compile-stategraph.md`。建议先阅读[第 04 章：一段 Agent Loop，怎样变成 StateGraph 的节点与边？](/langchain-langgraph-source/how-to-build-stategraph)。
+> 本文是「LangChain × LangGraph 源码精读」的**第 05 章**，对应文件 `06how-to-compile-stategraph.md`。建议先阅读[第 04 章：一段 Agent Loop，怎样变成 StateGraph 的节点与边？](./05how-to-build-stategraph.md)。
 >
 > **本章只回答一个问题：** `StateGraph` 已经收集了节点、固定边和条件分支，为什么还需要 `compile()`？它如何把这些描述装配成真正可调用的对象，**又为什么不会在编译时就运行节点**？
 

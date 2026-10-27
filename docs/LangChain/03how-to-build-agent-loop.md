@@ -12,7 +12,7 @@ tags:
   - Python
 ---
 
-> 本文是「LangChain × LangGraph 源码精读」的**第 02 章**。建议先读[第 01 章：模型提出工具调用，究竟是谁执行了它？](/langchain-langgraph-source/how-to-execute-a-tool-call)。按照博客文件的连续编号，本篇文件名为 `03how-to-build-agent-loop.md`。
+> 本文是「LangChain × LangGraph 源码精读」的**第 02 章**。建议先读[第 01 章：模型提出工具调用，究竟是谁执行了它？](./02how-to-execute-a-tool-call.md)。按照博客文件的连续编号，本篇文件名为 `03how-to-build-agent-loop.md`。
 >
 > **本章只解决一个问题：工具执行结束后，结果怎样返回模型，并让下一次决策真正发生？** 我们会解释一条最小循环，但暂不讨论 Graph 的编译、节点调度或状态合并；那是接下来几章要回答的问题。
 

@@ -15,7 +15,7 @@ tags:
 ---
 
 > **LangChain × LangGraph 源码精读 · 第 08 章**  
-> 上一篇：[第 07 章｜节点读到的 State 从哪里来？](/langchain-langgraph-source/how-to-read-write-state)  
+> 上一篇：[第 07 章｜节点读到的 State 从哪里来？](./08how-to-read-write-state.md)  
 > 本章唯一的问题：**如果同一步里两个节点都返回 `{"evidence": ...}`，谁应该决定 State 中的 `evidence` 最终是什么？**
 
 上一章我们已经沿着 `节点返回局部更新 → ChannelWrite → apply_writes() → Channel.update()` 走完了一条正常的数据链。在那条链里，每一轮对同一个字段只有一个写入者：运行 `pytest`，得到退出码；修复文件；再次运行 `pytest`。所以我们只需要最简单的字段更新规则：把这个新值保存下来。

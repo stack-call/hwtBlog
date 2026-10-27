@@ -13,7 +13,7 @@ tags:
   - Python
 ---
 
-> 本文是「LangChain × LangGraph 源码精读」的**第 07 章**，对应文件名 `08how-to-read-write-state.md`。建议先读 [第 06 章：一次 graph.invoke()，是谁让 model → tools → model 持续运行？](/langchain-langgraph-source/how-to-run-pregel-loop)。
+> 本文是「LangChain × LangGraph 源码精读」的**第 07 章**，对应文件名 `08how-to-read-write-state.md`。建议先读 [第 06 章：一次 graph.invoke()，是谁让 model → tools → model 持续运行？](./07how-to-run-pregel-loop.md)。
 >
 > **本章唯一要弄清楚的事情：** 用户在节点里看到的是一个普通 `State` 字典，但 Pregel Runtime 管理的并不是一份任由节点原地修改的共享字典。**节点读到的数据怎样组装出来、节点返回的部分更新怎样变成下一轮可见的状态？**
 

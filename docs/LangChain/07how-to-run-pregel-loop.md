@@ -13,7 +13,7 @@ tags:
   - Python
 ---
 
-> 本文是「LangChain × LangGraph 源码精读」的**第 06 章**，文件名为 `07how-to-run-pregel-loop.md`。建议先阅读[第 05 章：Graph 定义好了，为什么还不能直接执行？](/langchain-langgraph-source/how-to-compile-stategraph)。
+> 本文是「LangChain × LangGraph 源码精读」的**第 06 章**，文件名为 `07how-to-run-pregel-loop.md`。建议先阅读[第 05 章：Graph 定义好了，为什么还不能直接执行？](./06how-to-compile-stategraph.md)。
 >
 > **本章只解决一个核心问题：** `StateGraph.compile()` 已经产生了可运行的图对象；当我们调用 `graph.invoke()` 后，到底是谁决定执行哪个节点、什么时候让它的结果生效，以及下一轮为什么会回到 `model`？
 

@@ -15,7 +15,7 @@ tags:
 ---
 
 > **LangChain × LangGraph 源码精读 · 第 09 章**  
-> 上一篇：[第 08 章｜两个节点同时更新 State，为什么不能直接覆盖？](/langchain-langgraph-source/how-to-reduce-concurrent-state)  
+> 上一篇：[第 08 章｜两个节点同时更新 State，为什么不能直接覆盖？](./09how-to-reduce-concurrent-state.md)  
 > **本章唯一的问题：** 同一个 Agent 正在“运行测试 → 修改代码 → 再运行测试”，为什么 `invoke()` 的调用者通常只能等最终结果，而 `stream()` 可以让调用者在执行尚未结束时看到过程？
 
 上一章，我们已经解释了 Pregel 怎样在执行步结束时合并多个节点的写入。到这里，框架内部其实已经能够回答“当前执行到了哪里”：`model` 做出了哪个决定、`tools` 刚刚运行了什么、`pytest` 的退出码是多少。**但框架知道，不意味着调用者也能及时知道。**
@@ -548,7 +548,7 @@ StreamProtocol → SyncQueue → _output() → yield
 
 到这里，我们已经沿真实调用链理解了：**图如何执行、节点怎样更新 State、更新怎样合并，以及这些过程怎样被外界观察。** 但我们还没有解决“执行到一半进程消失”的问题。
 
-下一篇：[**第 10 章｜执行中断以后，LangGraph 怎样找回上一步？**](/langchain-langgraph-source/how-to-checkpoint-graph-state)，预计文件名：`11how-to-checkpoint-graph-state.md`。我们将仍然让退款 Agent 跑同一个任务，只是在“第一次测试失败、准备修复代码”之后人为中断执行，看看没有持久化状态时会丢失什么；然后再引入 Checkpoint，沿真实源码解释保存与恢复的边界。
+下一篇：[**第 10 章｜执行中断以后，LangGraph 怎样找回上一步？**](./11how-to-checkpoint-graph-state.md)，预计文件名：`11how-to-checkpoint-graph-state.md`。我们将仍然让退款 Agent 跑同一个任务，只是在“第一次测试失败、准备修复代码”之后人为中断执行，看看没有持久化状态时会丢失什么；然后再引入 Checkpoint，沿真实源码解释保存与恢复的边界。
 
 ---
 

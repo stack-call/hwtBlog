@@ -12,7 +12,7 @@ tags:
   - Python
 ---
 
-> 本文是「LangChain × LangGraph 源码精读」的**第 03 章**，文件名 `04how-to-create-agent.md`。建议先读[第 02 章：一次工具调用结束后，模型为什么还能继续？](/langchain-langgraph-source/how-to-build-agent-loop)。
+> 本文是「LangChain × LangGraph 源码精读」的**第 03 章**，文件名 `04how-to-create-agent.md`。建议先读[第 02 章：一次工具调用结束后，模型为什么还能继续？](./03how-to-build-agent-loop.md)。
 >
 > **本章只回答一个问题：我们已经能用 `while` 把模型与工具连成循环，LangChain 的 `create_agent()` 究竟替我们组织了什么？** 我们会走到「生成可执行图」为止；图内部怎样逐步调度、合并状态，是后面的章节。
 
