@@ -20,3 +20,5 @@ sidebar_position: 1
 - [Transformer](./category/transformer)
 - [MySQL 源码分析](./category/mysql)
 - [Redis 源码分析](./category/redis)
+- [RocketMQ 源码分析](./category/rocketmq)
+- [LangChain 与 LangGraph 源码分析](./category/langchain)
