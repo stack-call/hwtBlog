@@ -16,3 +16,7 @@ sidebar_position: 1
 - [计算机相关历史发展](./category/history)
 - [AI Agent](./category/agent)
 - [DeepAgents 源码分析](./category/deepagents)
+- [DeepAgents 源码分析(新)](./category/deepagents-new)
+- [Transformer](./category/transformer)
+- [MySQL 源码分析](./category/mysql)
+- [Redis 源码分析](./category/redis)
