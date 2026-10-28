@@ -4,6 +4,46 @@
 
 import {themes as prismThemes} from 'prism-react-renderer';
 
+/**
+ * 博客排序钩子，用官方 processBlogPosts 在列表渲染前重排。
+ *
+ * 两个自定义 frontmatter 字段：
+ * - `pinned: true` / `pinned: 1` / `pinned: 2`：置顶，数字越小越靠前。
+ * - `deprecated: true`：已废弃，沉到列表末尾，但仍然可以访问。
+ *
+ * 未使用这两个字段的文章保持默认的日期倒序。
+ */
+function getPinnedRank(post) {
+  const pinned = post.metadata.frontMatter?.pinned;
+  if (pinned === true) {
+    return 0;
+  }
+  if (typeof pinned === 'number' && Number.isFinite(pinned)) {
+    return pinned;
+  }
+  return Number.POSITIVE_INFINITY;
+}
+
+function getDeprecatedRank(post) {
+  return post.metadata.frontMatter?.deprecated ? 1 : 0;
+}
+
+function processBlogPosts({blogPosts}) {
+  return blogPosts
+    .map((post, index) => ({
+      post,
+      index,
+      deprecated: getDeprecatedRank(post),
+      rank: getPinnedRank(post),
+    }))
+    // 先按废弃与否分组，再按置顶序号，最后用原始下标兜底保证顺序稳定
+    .sort(
+      (a, b) =>
+        a.deprecated - b.deprecated || a.rank - b.rank || a.index - b.index,
+    )
+    .map(({post}) => post);
+}
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: '何文涛的个人博客',
@@ -44,6 +84,7 @@ const config = {
           blogTitle: '博客',
           blogDescription: '学习总结与生活随笔',
           postsPerPage: 10,
+          processBlogPosts,
           beforeDefaultRemarkPlugins: [require('./plugins/remark-gfm-alerts')],
           feedOptions: {
             type: ['rss', 'atom'],

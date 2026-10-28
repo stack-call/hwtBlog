@@ -1,0 +1,35 @@
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.pinnedBadge,
+.deprecatedBadge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--ifm-global-radius, 0.25rem);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+}
+
+.pinnedBadge {
+  background: var(--ifm-color-primary);
+  color: var(--ifm-color-white, #fff);
+}
+
+.deprecatedBadge {
+  background: var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-emphasis-800);
+}
+
+/* 删除线会沿着标题内联内容绘制，因此标题里的链接也会被划掉 */
+.deprecatedTitle {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.65;
+}

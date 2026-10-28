@@ -1,0 +1,29 @@
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.85rem 1.1rem;
+  border-left: 4px solid var(--ifm-color-warning-dark);
+  border-radius: var(--ifm-global-radius, 0.25rem);
+  background: var(--ifm-color-warning-contrast-background, rgba(255, 236, 179, 0.5));
+  color: var(--ifm-color-emphasis-800);
+  font-size: 0.94rem;
+  line-height: 1.7;
+}
+
+.noticeTitle {
+  color: var(--ifm-color-warning-darkest, #8a6d1f);
+  white-space: nowrap;
+}
+
+.noticeBody {
+  flex: 1 1 18rem;
+}
+
+.noticeLink {
+  margin: 0 0.15rem;
+  font-weight: 600;
+  text-decoration: underline;
+}
