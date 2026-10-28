@@ -229,7 +229,11 @@ div[class^='announcementBar_'] {
   font-weight: 700;
 }
 
-h1 {
+/* 只有首页 hero 和博客归档页的标题在深色背景上，才需要白色。
+   这里必须限定作用域：以前是无条件的 `h1 { color: white }`，
+   会让博客文章标题、标签页、分类页、404 页的 h1 在白色背景上变成白字。 */
+.hero h1,
+.hero__title {
   color: white !important;
 }
 

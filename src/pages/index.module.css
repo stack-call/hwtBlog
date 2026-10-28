@@ -16,8 +16,18 @@
   }
 }
 
+.heroIntro {
+  max-width: 42rem;
+  margin: 0 auto 2rem;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  opacity: 0.92;
+}
+
 .buttons {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }

@@ -8,30 +8,32 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: '体系化的文档',
+    title: '成体系的文档',
     Svg: MountainSvg,
     description: (
       <>
-        汇编语言、操作系统、编译原理、x86-64 体系结构等专题，按知识体系整理成文档，
+        汇编语言、操作系统、编译原理、x86-64 体系结构等基础专题，按知识脉络整理成文档，
         而不是零散的笔记。
       </>
     ),
   },
   {
-    title: '学习与思考的记录',
+    title: '源码阅读系列',
     Svg: TreeSvg,
     description: (
       <>
-        博客里放的是成篇的总结与随笔：读书笔记、源码阅读、以及一些还没想明白的问题。
+        MySQL、Redis、RocketMQ、Transformer、LangChain / LangGraph、DeepAgents：
+        对着固定版本的源码逐段读，并区分真实源码节选、教学化简与概念伪代码。
       </>
     ),
   },
   {
-    title: '持续更新',
+    title: '博客与随笔',
     Svg: ReactSvg,
     description: (
       <>
-        内容基于 Docusaurus 3 构建，推送到 <code>main</code> 分支即自动发布到 GitHub Pages。
+        把 Agent 的成本、权限、沙箱、可观测性这类工程问题写成成篇的总结；
+        也放读书笔记和一些还没想明白的问题。
       </>
     ),
   },
