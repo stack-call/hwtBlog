@@ -1,6 +1,7 @@
 ---
 slug: /message-queue/minimal-memory-queue
 title: 从 Python 列表开始：写出第一版消息队列
+sidebar_position: 2
 description: 继续追踪订单 1001 的通知任务，用最简单的 Python 列表分开消息的产生与处理，并通过两次独立启动，观察内存队列为何会丢失未处理消息。
 tags: [消息队列, Python, RocketMQ, 源码精读]
 ---

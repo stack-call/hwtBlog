@@ -1,6 +1,7 @@
 ---
 slug: /message-queue/persistent-message-queue
 title: 进程重启之后，消息还能找回来吗？
+sidebar_position: 3
 description: 延续订单 1001 的通知任务，从内存列表走向磁盘追加日志，用独立进程验证消息恢复，再对照 RocketMQ 5.5.1 的存储入口理解持久化的边界。
 tags: [消息队列, Python, RocketMQ, 持久化, 源码精读]
 ---
