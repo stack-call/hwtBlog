@@ -54,6 +54,7 @@ sidebar_position: 1
 - [MySQL 源码分析](./category/mysql)
 - [Redis 源码分析](./category/redis)
 - [RocketMQ 源码分析](./category/rocketmq)
+- [分布式系统分析](./category/distributed-systems)
 
 ### 模型与 Agent
 
