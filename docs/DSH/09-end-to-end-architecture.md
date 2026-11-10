@@ -1,7 +1,7 @@
 ---
 title: "DSH 源码精读（九）：从启动到回答，终于把整条运行链串起来了"
 sidebar_label: "九、从启动到回答的整条运行链"
-sidebar_position: 10
+sidebar_position: 11
 slug: dsh-source-09-end-to-end-architecture
 description: "沿一个只读仓库分析请求，把 DSH 的 Profile 装配、Agent 创建、Turn/Step、工具执行和 Session 投影连成一条可核对的运行链。"
 tags: [DeepSeek-Harness, Agent, 源码精读]

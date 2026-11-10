@@ -1,7 +1,7 @@
 ---
 title: "DSH 源码精读（五）：为什么两个 Agent 看到的工具可以不同？"
 sidebar_label: "五、两个 Agent 为什么看到不同的工具"
-sidebar_position: 6
+sidebar_position: 7
 slug: dsh-source-05-agent-scope
 description: "从同一进程里的只读仓库侦察助手与发版助手出发，逐步理解 DSH 的 agent.ctx、Scope、工具可见性限制和执行期保护。"
 tags: [DeepSeek-Harness, Agent, 源码精读]

@@ -1,7 +1,7 @@
 ---
 title: "DSH 源码精读（三）：为什么不直接保存 messages 数组？"
 sidebar_label: "三、为什么不直接保存 messages 数组？"
-sidebar_position: 4
+sidebar_position: 5
 slug: dsh-source-03-session-event-log
 description: "从一次读取工具的结果和一次可能中断的执行出发，逐步读懂 DSH 的 Session Event Log 如何记录事实，又如何派生模型消息。"
 tags: [DeepSeek-Harness, Agent, 源码精读]

@@ -1,7 +1,7 @@
 ---
 title: "DSH 源码精读（八）：Agent 中途停下后，到底能恢复什么？"
 sidebar_label: "八、中途停下后到底能恢复什么"
-sidebar_position: 9
+sidebar_position: 10
 slug: dsh-source-08-interruption-and-recovery
 description: "从一次读取工具的中断出发，理解 DeepSeek Harness 如何区分主动取消、执行错误与进程崩溃，以及 Session 日志能恢复什么、不能恢复什么。"
 tags: [DeepSeek-Harness, Agent, 源码精读]

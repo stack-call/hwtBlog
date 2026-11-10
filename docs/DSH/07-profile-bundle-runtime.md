@@ -1,7 +1,7 @@
 ---
 title: "DSH 源码精读（七）：同一套 Agent Runtime，为什么能启动成两种应用？"
 sidebar_label: "七、同一套 Runtime 怎么启动成两种应用"
-sidebar_position: 8
+sidebar_position: 9
 slug: dsh-source-07-profile-bundle-runtime
 description: "从仓库侦察助手的 Web 和一次性执行两种使用方式出发，逐步理解 DeepSeek Harness 的 Profile、Bundle、Patch 与 Loader 如何组合出真正运行的插件树。"
 tags: [DeepSeek-Harness, Agent, 源码精读]

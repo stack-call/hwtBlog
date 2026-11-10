@@ -1,7 +1,7 @@
 ---
 title: "DSH 源码精读（四）：加一条日志，为什么会引出 Cordis？"
 sidebar_label: "四、加一条日志为什么会引出 Cordis"
-sidebar_position: 5
+sidebar_position: 6
 slug: dsh-source-04-cordis-plugins
 description: "从仓库侦察助手的一次工具结果审计出发，逐步理解 DeepSeek Harness 的事件监听、插件生命周期、服务与依赖声明。"
 tags: [DeepSeek-Harness, Cordis, Agent, 源码精读]

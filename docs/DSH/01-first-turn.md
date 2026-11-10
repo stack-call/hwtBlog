@@ -1,7 +1,7 @@
 ---
 title: "DSH 源码精读（一）：一个问题，为什么要调用两次模型？"
 sidebar_label: "一、为什么要调用两次模型？"
-sidebar_position: 2
+sidebar_position: 3
 slug: dsh-source-01-first-turn
 description: "先看一条请求如何执行，再对照 DeepSeek Harness 的几行真实源码，理解 Turn、Step 与工具反馈。"
 tags: [DeepSeek-Harness, Agent, 源码精读]

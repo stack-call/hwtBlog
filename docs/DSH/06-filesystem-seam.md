@@ -1,7 +1,7 @@
 ---
 title: "DSH 源码精读（六）：换个文件系统，为什么不必重写 read 工具？"
 sidebar_label: "六、换个文件系统为什么不必重写 read"
-sidebar_position: 7
+sidebar_position: 8
 slug: dsh-source-06-filesystem-seam
 description: "从仓库侦察助手的一次 read 请求出发，沿 DSH 的 tool-fs、ctx.fs、fs-local 和 fs-sandbox 源码，理解工具与执行环境如何解耦。"
 tags: [DeepSeek-Harness, Agent, 源码精读]

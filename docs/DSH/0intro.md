@@ -3,7 +3,7 @@ title: DSH 源码精读（引言）：从 Agent Loop 到可组合的运行时
 sidebar_label: 引言：从 Agent Loop 到可组合的运行时
 description: 从一个 while 循环能跑通的 Agent 出发，按四个真实限制推导 Turn 与 Step、只追加的 Session 事件日志、Cordis 插件边界与 Profile/Bundle 装配，说明 DSH 为什么需要长成一个运行时，并给出整个系列的阅读路线。
 tags: [DSH, DeepSeek Harness, Agent Runtime, 源码分析, 插件化]
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # DSH 源码精读（引言）：从 Agent Loop 到可组合的运行时

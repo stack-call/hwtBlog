@@ -1,7 +1,7 @@
 ---
 title: "DSH 源码精读（二）：为什么模型说要调用工具，不代表工具就能执行？"
 sidebar_label: "二、工具请求为什么要过执行边界？"
-sidebar_position: 3
+sidebar_position: 4
 slug: dsh-source-02-tool-boundary
 description: "沿一次 read 工具请求，理解 DeepSeek Harness 为什么把模型请求、工具定义、执行许可和结果反馈分开。"
 tags: [DeepSeek-Harness, Agent, 源码精读]
