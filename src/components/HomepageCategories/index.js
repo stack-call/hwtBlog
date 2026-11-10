@@ -34,6 +34,7 @@ const CategoryGroups = [
       {label: 'LangChain 与 LangGraph 源码分析', to: '/docs/category/langchain'},
       {label: 'DeepAgents 源码分析', to: '/docs/category/deepagents'},
       {label: 'DeepAgents 源码分析（新）', to: '/docs/category/deepagents-new'},
+      {label: 'DeepSeek Harness 源码精读', to: '/docs/category/dsh'},
       {label: 'AI Agent', to: '/docs/category/agent'},
     ],
   },
@@ -46,7 +47,7 @@ export default function HomepageCategories() {
         <div className="text--center">
           <Heading as="h2">内容地图</Heading>
           <p className={styles.lead}>
-            共 15 个专题分类。基础、中间件、模型与 Agent 三条线各自成体系，
+            共 16 个专题分类。基础、中间件、模型与 Agent 三条线各自成体系，
             也可以按目录顺序从头读。
           </p>
         </div>

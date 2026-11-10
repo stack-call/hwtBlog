@@ -14,7 +14,7 @@ sidebar_position: 1
 
 **中间件源码。** MySQL、Redis、RocketMQ。对着固定的版本和提交读关键路径：一条 SQL 怎么被解析和执行、一次 `SET` 在事件循环里怎么走、一条消息从生产到投递经过了哪些结构。
 
-**模型与 Agent。** Transformer 的模型结构；LangChain / LangGraph 与 DeepAgents 的运行时和源码；以及 AI Agent 在成本、权限、沙箱、可观测性这些工程问题上的实践。
+**模型与 Agent。** Transformer 的模型结构；LangChain / LangGraph、DeepAgents 与 DeepSeek Harness（DSH）的运行时和源码；以及 AI Agent 在成本、权限、沙箱、可观测性这些工程问题上的实践。
 
 ## 源码分析怎么读
 
@@ -61,4 +61,5 @@ sidebar_position: 1
 - [LangChain 与 LangGraph 源码分析](./category/langchain)
 - [DeepAgents 源码分析](./category/deepagents)
 - [DeepAgents 源码分析（新）](./category/deepagents-new)
+- [DeepSeek Harness 源码精读](./category/dsh)
 - [AI Agent](./category/agent)
