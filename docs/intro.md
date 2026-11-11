@@ -56,6 +56,7 @@ sidebar_position: 1
 - [Redis 源码分析](./category/redis)
 - [RocketMQ 源码分析](./category/rocketmq)
 - [分布式系统分析](./category/distributed-systems)
+- [缓存体系](./category/cache-system)
 
 ### 模型与 Agent
 

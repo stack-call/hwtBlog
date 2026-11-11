@@ -26,6 +26,7 @@ const CategoryGroups = [
       {label: 'Redis 源码分析', to: '/docs/category/redis'},
       {label: 'RocketMQ 源码分析', to: '/docs/category/rocketmq'},
       {label: '分布式系统分析', to: '/docs/category/distributed-systems'},
+      {label: '缓存体系', to: '/docs/category/cache-system'},
     ],
   },
   {
@@ -49,7 +50,7 @@ export default function HomepageCategories() {
         <div className="text--center">
           <Heading as="h2">内容地图</Heading>
           <p className={styles.lead}>
-            共 18 个专题分类。基础、中间件、模型与 Agent 三条线各自成体系，
+            共 19 个专题分类。基础、中间件、模型与 Agent 三条线各自成体系，
             也可以按目录顺序从头读。
           </p>
         </div>
