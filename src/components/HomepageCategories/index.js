@@ -15,6 +15,7 @@ const CategoryGroups = [
       {label: '计算机相关历史发展', to: '/docs/category/history'},
       {label: 'Rust', to: '/docs/category/rust'},
       {label: 'Leetcode', to: '/docs/category/leetcode'},
+      {label: '异步与高并发', to: '/docs/category/async-concurrency'},
     ],
   },
   {
@@ -48,7 +49,7 @@ export default function HomepageCategories() {
         <div className="text--center">
           <Heading as="h2">内容地图</Heading>
           <p className={styles.lead}>
-            共 17 个专题分类。基础、中间件、模型与 Agent 三条线各自成体系，
+            共 18 个专题分类。基础、中间件、模型与 Agent 三条线各自成体系，
             也可以按目录顺序从头读。
           </p>
         </div>

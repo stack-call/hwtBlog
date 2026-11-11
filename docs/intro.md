@@ -48,6 +48,7 @@ sidebar_position: 1
 - [计算机相关历史发展](./category/history)
 - [Rust](./category/rust)
 - [Leetcode](./category/leetcode)
+- [异步与高并发](./category/async-concurrency)
 
 ### 中间件源码分析
 
