@@ -1,0 +1,9 @@
+{
+  "label": "分布式系统(新)",
+  "position": 21,
+  "link": {
+    "type": "generated-index",
+    "slug": "/category/distributed-systems-new",
+    "description": "从单机库存到复制、选举、分片，以及 ZooKeeper、Redis Cluster、Kafka 的渐进式设计推导。"
+  }
+}
