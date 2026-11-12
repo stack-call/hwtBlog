@@ -131,6 +131,8 @@ C/C++ 往往允许更多底层访问，但不能因此证明程序更正确；GC
 
 **相关阅读**：[book](https://doc.rust-lang.org/book/); [ref](https://doc.rust-lang.org/reference/)。
 
+> 这一章和后两章的生命周期问题，在 [附：生命周期一次讲清](../41-lifetime-summary.md) 里用八个例子重新走了一遍，可以当作学完本篇后的回看材料。
+
 ---
 
 [← 上一篇](12-lifetimes-in-signatures.md) · [系列目录](../00-introduction.md) · [下一篇：为什么数据结构必须明确拥有还是借用内部数据？](../part-4/14-own-or-borrow-in-data-structures.md)
