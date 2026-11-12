@@ -18,11 +18,24 @@
 
 .heroMotto {
   margin: 0.5rem auto 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  opacity: 0.8;
+}
+
+.heroMottoEn {
+  font-size: 0.85rem;
+  letter-spacing: 0.26em;
+  /* 字距会在行尾多出一格，用等量的左缩进让文字在视觉上居中 */
+  text-indent: 0.26em;
+}
+
+.heroMottoZh {
   font-size: 1.05rem;
   letter-spacing: 0.3em;
-  /* 字距会在行尾多出一格，用等量的左缩进让文字在视觉上居中 */
   text-indent: 0.3em;
-  opacity: 0.8;
 }
 
 .heroIntro {

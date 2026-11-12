@@ -17,7 +17,10 @@ function HomepageHeader() {
           {siteConfig.title}
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <p className={styles.heroMotto}>静水远行，岁月无声。</p>
+        <p className={styles.heroMotto}>
+          <span className={styles.heroMottoEn}>Hushed Waters Travel.</span>
+          <span className={styles.heroMottoZh}>静水远行，岁月无声。</span>
+        </p>
         <p className={styles.heroIntro}>
           这里放两类内容：按知识体系整理的<strong>文档</strong>，和成篇的<strong>博客</strong>。
           文档偏计算机基础与源码阅读，博客偏 AI Agent 的工程实践，以及一些还没想明白的问题。
