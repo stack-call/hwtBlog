@@ -16,6 +16,15 @@
   }
 }
 
+.heroMotto {
+  margin: 0.5rem auto 1.5rem;
+  font-size: 1.05rem;
+  letter-spacing: 0.3em;
+  /* 字距会在行尾多出一格，用等量的左缩进让文字在视觉上居中 */
+  text-indent: 0.3em;
+  opacity: 0.8;
+}
+
 .heroIntro {
   max-width: 42rem;
   margin: 0 auto 2rem;
