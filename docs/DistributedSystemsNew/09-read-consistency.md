@@ -1,7 +1,7 @@
 ---
 title: "09｜已经写成功，为什么从副本却读到旧库存？"
 sidebar_label: "九、写成功为什么读到旧库存"
-sidebar_position: 10
+sidebar_position: 11
 description: "写成功后从副本读到旧库存：线性一致、读己之写与会话保证，各自的代价与适用边界。"
 slug: /distributed-systems-new/09-read-consistency
 ---

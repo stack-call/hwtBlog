@@ -1,7 +1,7 @@
 ---
 title: "12｜迁移商品时还在接单，如何避免丢写与错路由？"
 sidebar_label: "十二、迁移时怎样避免丢写与错路由"
-sidebar_position: 13
+sidebar_position: 14
 description: "迁移分片时仍在接单：双写、影子读与路由切换顺序，怎样避免丢写与错路由。"
 slug: /distributed-systems-new/12-resharding
 ---

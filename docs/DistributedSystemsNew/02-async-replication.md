@@ -1,7 +1,7 @@
 ---
 title: "02｜加了副本，成功的库存预留为什么仍会丢失？"
 sidebar_label: "二、成功的预留为什么会丢"
-sidebar_position: 3
+sidebar_position: 4
 description: "异步复制下，客户端已经收到成功，主节点却在转发前崩溃：一次确认过的预留为什么会凭空消失。"
 slug: /distributed-systems-new/02-async-replication
 ---

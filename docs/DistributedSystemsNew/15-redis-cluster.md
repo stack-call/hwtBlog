@@ -1,7 +1,7 @@
 ---
 title: "15｜Redis Cluster 为什么不对普通 SET 使用多数派提交？"
 sidebar_label: "十五、Redis Cluster 为什么不用多数派提交"
-sidebar_position: 16
+sidebar_position: 17
 description: "Redis Cluster 对普通 SET 不用多数派提交：异步复制、槽位归属与故障转移之间的取舍。"
 slug: /distributed-systems-new/15-redis-cluster
 ---

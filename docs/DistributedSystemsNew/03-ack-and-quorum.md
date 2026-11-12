@@ -1,7 +1,7 @@
 ---
 title: "03｜等待所有副本太慢，为什么多数派有用？"
 sidebar_label: "三、为什么多数派有用"
-sidebar_position: 4
+sidebar_position: 5
 description: "等待所有副本太慢，等待多数派为什么仍能保住已确认的写入；多数集合必然相交的含义与边界。"
 slug: /distributed-systems-new/03-ack-and-quorum
 ---

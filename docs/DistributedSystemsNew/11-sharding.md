@@ -1,7 +1,7 @@
 ---
 title: "11｜复制不扩容：怎样让不同机器保存不同商品？"
 sidebar_label: "十一、怎样让不同机器保存不同商品"
-sidebar_position: 12
+sidebar_position: 13
 description: "复制解决可用性但不扩容：按商品分片、路由表与数据倾斜，以及分片键选择带来的新故障。"
 slug: /distributed-systems-new/11-sharding
 ---

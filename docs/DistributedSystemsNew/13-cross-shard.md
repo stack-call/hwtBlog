@@ -1,7 +1,7 @@
 ---
 title: "13｜一个订单跨两个分片，怎样避免只成功一半？"
 sidebar_label: "十三、跨两个分片怎样避免只成功一半"
-sidebar_position: 14
+sidebar_position: 15
 description: "一个订单跨两个分片：两阶段提交、Saga 与补偿，怎样避免只成功一半。"
 slug: /distributed-systems-new/13-cross-shard
 ---

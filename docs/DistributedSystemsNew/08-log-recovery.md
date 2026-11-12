@@ -1,7 +1,7 @@
 ---
 title: "08｜故障节点归来，分叉的日志怎样修复？"
 sidebar_label: "八、分叉的日志怎样修复"
-sidebar_position: 9
+sidebar_position: 10
 description: "故障节点归来时日志出现分叉：从冲突处截断、向主节点补齐，以及快照怎样替代全量日志。"
 slug: /distributed-systems-new/08-log-recovery
 ---

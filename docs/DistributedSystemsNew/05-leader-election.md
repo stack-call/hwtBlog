@@ -1,7 +1,7 @@
 ---
 title: "05｜主节点失联后，谁有资格接替它？"
 sidebar_label: "五、谁来接替失联的主节点"
-sidebar_position: 6
+sidebar_position: 7
 description: "主节点失联后谁来接管：任期、投票与多数派选举，为什么不能靠先到先得或最长心跳。"
 slug: /distributed-systems-new/05-leader-election
 ---

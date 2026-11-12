@@ -1,7 +1,7 @@
 ---
 title: "14｜ZooKeeper 为什么把协调状态做成独立服务？"
 sidebar_label: "十四、ZooKeeper 为什么把协调做成独立服务"
-sidebar_position: 15
+sidebar_position: 16
 description: "ZooKeeper 把协调状态做成独立服务：ZAB、zxid、watch 与顺序保证，以及它做不到的事。"
 slug: /distributed-systems-new/14-zookeeper
 ---

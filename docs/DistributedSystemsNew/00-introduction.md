@@ -139,4 +139,4 @@ assert service.available["book"] == 8
 
 ---
 
-[下一章：01｜一台机器已经够用，为什么还需要副本？ →](./01-single-node.md)
+[下一章：问题全图｜12 类核心问题 →](./00-problem-map.md)

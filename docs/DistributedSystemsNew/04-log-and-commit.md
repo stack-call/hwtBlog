@@ -1,7 +1,7 @@
 ---
 title: "04｜复制到了多数节点，什么时候才真正算提交？"
 sidebar_label: "四、什么时候才算提交"
-sidebar_position: 5
+sidebar_position: 6
 description: "复制到多数节点不等于提交：日志、提交索引与可读状态的关系，以及崩溃后怎样判断算不算数。"
 slug: /distributed-systems-new/04-log-and-commit
 ---

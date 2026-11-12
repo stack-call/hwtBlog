@@ -1,7 +1,7 @@
 ---
 title: "06｜旧主节点还活着：如何避免两个写入者？"
 sidebar_label: "六、如何避免两个写入者"
-sidebar_position: 7
+sidebar_position: 8
 description: "网络分区时旧主还活着：任期递增、fencing token 与租约，怎样保证同一时刻只有一个写入者。"
 slug: /distributed-systems-new/06-term-and-fencing
 ---

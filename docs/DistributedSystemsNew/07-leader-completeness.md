@@ -1,7 +1,7 @@
 ---
 title: "07｜为什么新主节点不能只凭选票就上任？"
 sidebar_label: "七、为什么不能只凭选票上任"
-sidebar_position: 8
+sidebar_position: 9
 description: "新主节点不能只凭选票上任：日志完整性检查，为什么日志落后的节点必须被拒绝。"
 slug: /distributed-systems-new/07-leader-completeness
 ---

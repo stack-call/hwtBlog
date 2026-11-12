@@ -1,7 +1,7 @@
 ---
 title: "10｜请求成功却没有响应：怎样防止重复预留？"
 sidebar_label: "十、怎样防止重复预留"
-sidebar_position: 11
+sidebar_position: 12
 description: "请求成功但响应丢失：幂等键、原子去重与去重表的持久化边界，怎样避免重复扣减。"
 slug: /distributed-systems-new/10-idempotency
 ---

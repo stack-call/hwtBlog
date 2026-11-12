@@ -1,7 +1,7 @@
 ---
 title: "01｜一台机器已经够用，为什么还需要副本？"
 sidebar_label: "一、为什么还需要副本"
-sidebar_position: 2
+sidebar_position: 3
 description: "单机内存库存能跑通，但机器会停机。副本带来的第一个问题不是性能，而是两份状态谁说了算。"
 slug: /distributed-systems-new/01-single-node
 ---

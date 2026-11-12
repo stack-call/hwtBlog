@@ -1,7 +1,7 @@
 ---
 title: "16｜Kafka 为什么把元数据共识和消息复制分开？"
 sidebar_label: "十六、Kafka 为什么把共识和复制分开"
-sidebar_position: 17
+sidebar_position: 18
 description: "Kafka 把元数据共识与消息复制分开：KRaft 管元数据，ISR 与高水位决定消息何时可见。"
 slug: /distributed-systems-new/16-kafka
 ---
@@ -158,4 +158,4 @@ Controller 管理元数据和领导权变化，并不意味着每条业务消息
 
 ---
 
-[← 上一章：15｜Redis Cluster 为什么不对普通 SET 使用多数派提交？](./15-redis-cluster.md)
+[← 上一章：15｜Redis Cluster 为什么不对普通 SET 使用多数派提交？](./15-redis-cluster.md) · [下一章：机制全景｜四种真实系统对照 →](./17-mechanisms-overview.md)
