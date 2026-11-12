@@ -1,143 +1,272 @@
 ---
-title: "第 09 章｜为什么不能允许任意代码修改订单？"
+title: "09｜为什么不能让任何代码随便修改订单：从字典到封装与类"
 sidebar_position: 9
-description: "从订单系统的一次具体失败出发，理解为什么不能允许任意代码修改订单？，以及由此带来的语法、运行行为与设计取舍。"
+description: "一笔已支付订单仍能改价，如何从具体反例推导出状态不变量、封装、类，以及不用类的替代方案。"
 slug: /programming-languages/09-encapsulation
 ---
 
-# 第 09 章：为什么不能允许任意代码修改订单？
+# 为什么不能让任何代码随便修改订单？
 
-> 本篇位置：**第 2 篇 · 数据和行为如何组织成对象？**。贯穿项目仍然是订单处理系统；我们只扩大解决问题需要的那一层，不突然引入所有高级机制。
-
-验证函数已经存在，但同事在新页面直接写 `order["amount"] = -100`，绕开规则。仅靠“大家记得调用验证”开始不可靠。
-
-## 1. 当前任务：先把能工作的最小程序摆出来
-
-在只有一个调用者的模块里，团队约定可能足够；我们不应该为了一个简单字典默认创造对象层次。问题发生在不同调用方维护同一状态之后。
-
-**教学最小实现（不是任何仓库的原始源码）：**
+我们已经会用函数计算订单金额。假设订单里有两项商品，单价分别是 100 分和 250 分，合计 350 分。最初，为了快速完成需求，用字典表示订单十分自然：
 
 ```python
-order = {"amount": 100, "paid": False}
-# 约定调用 change_amount(order, next_amount)
+order = {"items": [100, 250], "paid": False}
+print(sum(order["items"]))  # 350
 ```
 
-这里要区分两件事：代码碰巧对给定输入产生结果，和代码已经定义清楚了对所有合法输入的行为。第一步只要求前者成立。我们保留这段朴素实现，因为它能作为后面所有变化的对照基线。
+这里没有必要急着引入类：两种字段、一次求和，一眼就能看懂。但新需求改变了局面：**支付完成的订单不允许再修改商品项**。我们只沿这一个约束，把现有设计推进到能可靠表达它为止。
 
-## 2. 给它一个新输入：旧设计在哪里失效？
+## 字典不是错误的，错误在于我们的假设
 
-即使 `change_amount` 编写得正确，也无法阻止另一条路径破坏状态。失败证据是同一个业务状态有多个写入口，每个入口都需要重复理解全部规则。
-
-**用于触发限制的代码／输入（实验场景，不伪称来自框架）：**
+支付前，调用方添加一项商品：
 
 ```python
+order["items"].append(50)
 order["paid"] = True
-order["amount"] = -100  # 直接绕过 change_amount
-print(order)
 ```
 
-如果只说“这种写法可扩展性不好”，读者无法判断是否真的需要复杂机制。这里必须明确指出，当前输入或运行条件改变了哪条假设、会发生什么可观察结果。请把这个失败条件记住，后面的抽象就是为它而来。
+此时 `sum(order["items"]) == 400`。但另一名开发者不知道支付后禁止改价，继续写出：
 
-## 3. 这一次究竟缺了什么能力？
+```python
+order["items"].append(900)
+print(sum(order["items"]))  # 1300
+```
 
-让状态修改经过一个明确边界，在边界内统一检查条件。这个边界就是封装的动机；实现它不要求必须使用继承。
+程序没有报错，却生成一个违反业务规则的状态。这个错误比“程序崩溃”更隐蔽：数据结构仍然合法，业务意义已经错了。
 
-我们并不推翻上一节的代码，而是保留其有效部分，只替换造成问题的最小局部。这样新机制的成本和收益才看得清：如果实际业务永远不会遇到这个失败场景，简单方案仍然可能是更好的选择。
+现在我们可以把规则表达得精确一些：
 
-## 4. 加入一个必要机制：直接对照语法
+> 对同一笔订单，如果 `paid` 已经为 `True`，那么后续任何**被允许的业务操作**都不应该改变它的商品项。
 
-**教学化简后的改进实现：**
+这叫**状态不变量**：在一组规定的操作前后，始终要保持的事实。这个术语不是为了显得专业，而是为了让我们能检验设计是否满足要求。仅写“代码要规范”无法执行测试，而“支付后商品列表不变”是可检验的。
+
+先尝试最小补丁。我们加一个专用函数：
+
+```python
+
+def add_item(order: dict, cents: int) -> None:
+    if order["paid"]:
+        raise ValueError("paid order is immutable")
+    if cents < 0:
+        raise ValueError("negative price")
+    order["items"].append(cents)
+```
+
+它解决了**通过 `add_item` 修改**的路径：
+
+```python
+order = {"items": [100, 250], "paid": False}
+add_item(order, 50)
+order["paid"] = True
+# add_item(order, 900)  # ValueError
+```
+
+但是，这还不是一个封闭的系统。其他代码仍然能够执行 `order["items"].append(900)`，绕开唯一的检查。我们真正缺少的，不是另一个 `if`，而是一个**让修改集中经过同一入口的边界**。
+
+## 先不要急着使用 class：纯函数能否解决？
+
+可以。让订单成为不可变的数据，并让每次操作返回新订单。这样旧订单仍然存在，而不是由多个调用者共同原地修改：
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class OrderData:
+    items: tuple[int, ...]
+    paid: bool = False
+
+def add_item_data(order: OrderData, cents: int) -> OrderData:
+    if order.paid or cents < 0:
+        raise ValueError("invalid change")
+    return OrderData(order.items + (cents,), order.paid)
+
+def pay_data(order: OrderData) -> OrderData:
+    return OrderData(order.items, True)
+
+original = OrderData((100, 250))
+changed = add_item_data(original, 50)
+paid = pay_data(changed)
+assert original.items == (100, 250)
+assert paid.items == (100, 250, 50)
+```
+
+这个方案已经能让常规操作保持我们的规则：`frozen=True` 防止给字段重新赋值，元组又避免普通列表的原地 `append`。但 `frozen` 不是安全沙箱，也不是对任意嵌套可变对象的深度冻结。更重要的是，使用者仍需约定只通过我们提供的操作创建和变更对象。
+
+这给出了第一个重要结论：**状态约束不必由面向对象实现；不可变值 + 纯函数也是一条合理路线。** 如果系统以事件和不可变快照为中心，这种方式可能更容易推理。
+
+那么为什么还会有类？在订单需要多次在原对象上执行 `add_item`、`pay`、`cancel` 等动作时，我们希望把“状态”和“允许改变状态的操作”呈现为一个统一的业务单元。
+
+## 类第一次真正帮上了忙
+
+下面这段 Python 代码是**教学实现**，不是 CPython 项目的源码：
 
 ```python
 class Order:
-    def __init__(self, amount: int):
-        if amount < 0: raise ValueError("negative")
-        self._amount = amount
+    def __init__(self, items: list[int]):
+        if any(x < 0 for x in items):
+            raise ValueError("negative price")
+        self._items = list(items)  # 复制，避免外部列表继续影响订单
         self._paid = False
 
     @property
-    def amount(self) -> int:
-        return self._amount
+    def items(self) -> tuple[int, ...]:
+        return tuple(self._items)  # 不向外返回内部可变列表
 
-    def change_amount(self, amount: int) -> None:
-        if self._paid or amount < 0: raise ValueError("blocked")
-        self._amount = amount
+    @property
+    def paid(self) -> bool:
+        return self._paid
+
+    def add_item(self, cents: int) -> None:
+        if self._paid:
+            raise ValueError("cannot change paid order")
+        if cents < 0:
+            raise ValueError("negative price")
+        self._items.append(cents)
 
     def pay(self) -> None:
+        if self._paid:
+            raise ValueError("already paid")
         self._paid = True
+
+    def total(self) -> int:
+        return sum(self._items)
 ```
 
-调用者现在能读取 `amount`，但没有公开的 `amount` 属性赋值入口；需要通过 `change_amount` 表达业务动作。Python 的下划线只是约定，仍可通过 `_amount` 绕过，并非安全隔离。封装真正的价值是集中规则和降低误用概率。
+先注意 `list(items)`。如果直接写 `self._items = items`，调用方手里的原列表和订单内部会指向同一个列表。那样即使我们封装了 `add_item`，外部仍然可以通过原列表改变订单：
 
-这段语法并不是孤立的记忆材料。每一个新增符号都应该能对应到上节的明确需求。请留意输入怎样传入、状态怎样变化、输出由谁接收；遇到新术语，先把它翻译回程序实际做了什么。
+```python
+source = [100, 250]
+order = Order(source)
+source.append(900)
+assert order.total() == 350  # 复制输入后，这个断言才成立
+```
 
-## 5. 手工追踪一遍：输入、状态、输出
+再看 `items` 属性：我们返回元组，而不是内部列表。否则 `order.items.append(...)` 又会穿透检查边界。**封装不只是把变量名前面加下划线，更重要的是不给调用方留下可变的旁路。**
 
-`o=Order(100)` 保存初始状态；`o.change_amount(120)` 更新为 120；`o.pay()` 切到已付款；再次 `change_amount(130)` 抛异常，`o.amount` 仍是 120。公开 API 的状态转换保持了不变量。
+最后，`pay()` 和 `add_item()` 在同一个状态所有者中实现。它们能共同维护“已支付订单不可修改”这个规则，而不需要每个页面重复判断 `paid`。
 
-建议读者实际拿纸记录三列：**当前输入 / 当前保存的信息 / 本步之后的结果**。如果一个概念不能通过这三列解释其主要作用，我们暂时还没有把它讲透。对于编译器或运行时主题，第三列也可以换成生成的中间结构、调度动作或外部副作用。
+我们亲自追踪一次执行：
 
-## 6. 换一种语言写：哪些是语法差异，哪些是语义差异？
+| 操作 | 调用前状态 | 执行结果 | 调用后状态 |
+| --- | --- | --- | --- |
+| `Order([100, 250])` | 无订单 | 创建成功 | `items=(100,250), paid=False` |
+| `add_item(50)` | 未支付 | 成功 | `items=(100,250,50)` |
+| `pay()` | 未支付 | 成功 | `paid=True` |
+| `add_item(900)` | 已支付 | 抛出 `ValueError` | `items` 保持不变 |
 
-Java 的 `private` 提供更明确的语言级访问限制。
+这张表解释了为什么我们需要方法：不是为了“面向对象”四个字，而是为了集中表达业务允许的状态转换。
 
-**Java 示例（教学代码，非所引用仓库的源码节选）：**
+## Python 的 `self`、`@property` 到底做了什么？
+
+`order.add_item(50)` 可以在概念上理解成：找到 `Order` 类中对应的方法，并把当前实例作为首个参数传入。因此方法内部 `self._paid` 指向的是**这笔订单**的状态，而不是全局变量。Python 的方法绑定还涉及描述符，这个底层机制我们到“方法调用如何执行”一章再深入。
+
+`@property` 让使用者可以像读取字段那样写 `order.items`，但实际上执行的是一个读取方法。在本例中，这个方法返回新的元组快照。没有定义 `items` 的 setter，就不支持普通的 `order.items = (...)` 赋值方式。
+
+有必要说清楚边界：Python 的 `_items` 是非公开约定，不是不可绕过的安全控制。外部仍可有意访问 `order._items`。类帮助团队建立正确的 API 和局部推理边界，不是用来防御恶意调用方的沙箱。
+
+### 真实源码：为什么 `order.items` 会执行读取方法？
+
+现在才有必要朝执行实现看一眼。固定为 CPython `v3.13.5`，文件 [`Objects/descrobject.c`](https://github.com/python/cpython/blob/v3.13.5/Objects/descrobject.c)，函数 `property_descr_get`（约第 1564 行）。这个函数在属性访问遇到 `property` 时负责取值，其中正常读取路径的关键一行是：
+
+**真实源码节选：**
+
+```c
+return PyObject_CallOneArg(gs->prop_get, obj);
+```
+
+`gs->prop_get` 就是之前 `@property` 注册的读取函数，`obj` 是当前订单实例。于是 `order.items` 的运行过程可以具体展开为：查到类上的 `property` → 由描述符调用 getter → getter 把内部列表转换为元组 → 把元组交还给调用者。**不需要把所有属性访问都说成是读取一段内存**；这里确实发生了函数调用。
+
+同文件中的 `property_descr_set`（约第 1598 行）处理设置属性的路径。当没有设置函数时，它会给出没有 setter 的 `AttributeError`。因此我们的 `@property` 只读接口不是文字约定，而是在这一 CPython 版本里有明确的运行机制。注意这只能说明 property 这一路径，不意味着 Python 的其他属性都会调用同一个 getter。
+
+## 换成 Java，边界会发生什么变化？
+
+Java 提供语言级访问控制。下面示例保持同样的规则，但不追求把 Python 语法逐字翻译成 Java：
 
 ```java
+import java.util.ArrayList;
+import java.util.List;
+
 final class Order {
-    private long amount;
+    private final List<Long> items;
     private boolean paid;
-    Order(long amount) { this.amount = amount; }
-    void pay() { paid = true; }
-    void changeAmount(long next) {
-        if (paid || next < 0) throw new IllegalStateException();
-        amount = next;
+
+    Order(List<Long> source) {
+        if (source.stream().anyMatch(x -> x < 0))
+            throw new IllegalArgumentException("negative price");
+        this.items = new ArrayList<>(source);
     }
+
+    public void addItem(long cents) {
+        if (paid || cents < 0)
+            throw new IllegalStateException("invalid change");
+        items.add(cents);
+    }
+
+    public void pay() { paid = true; }
+    public List<Long> items() { return List.copyOf(items); }
 }
 ```
 
-Java 的 private 对普通源代码访问提供更强约束，仍不能自动证明所有业务方法都正确。示例构造器省略了负数检查，读者可以亲手补齐。
+`private` 让普通类外代码不能直接访问 `items`；`final` 约束的是字段引用不能重新指向另一个列表，**不是**列表内容不可变。因此仍必须复制输入，并避免返回内部可变列表。`List.copyOf` 返回不可修改的列表视图式结果或不可变列表对象，其具体复用策略由实现决定；这里的语义重点是调用者不能通过返回值修改原订单。
 
-我们比较的不是哪门语言“更高级”。先标出两段代码共同保证的行为，再找出各自额外承担的责任，例如存储期、错误传播、类型检查、运行时分派或资源清理。不能仅凭表面语法推断性能；性能结论需要固定实现、优化参数和输入数据后测量。
+这里也暴露出另一层差异：Java 编译器可以阻止某些越界字段访问；Python 主要依靠 API 约定与运行时检查。它们解决的是同一个设计问题，但提供的强制程度不同。
 
-## 7. 走进真实实现：固定版本，应该核对哪段源码？
+## C 没有 class，就不能封装吗？
 
-**源码阅读入口：** [Python 3.13 属性访问与描述符规则](https://docs.python.org/3.13/reference/)。
+也能。假设我们在头文件只声明一个不完整类型和操作函数：
 
-查看 `@property` 的官方行为说明；在 CPython v3.13.5 的 `Objects/descrobject.c` 中可继续定位属性描述符相关机制。不要把 `_amount` 约定说成强制的私有内存。
+```c
+/* order.h：公开接口（教学代码） */
+#include <stddef.h>
+typedef struct Order Order;
+Order *order_new(void);
+int order_add_item(Order *order, long cents);
+int order_pay(Order *order);
+void order_free(Order *order);
+```
 
-本节的源码链接用于**核对真实实现**；前面标为“教学”的代码都是作者为了建立直觉而写的最小样例，不冒充仓库源代码。除非明确提供某个版本、文件和逐字一致的节选，否则不把概念伪代码写成“真实源码”。规范规定的行为、具体实现的实现细节和我们的教学模型应当保持区分。
+`struct Order` 的具体字段只放在实现文件 `order.c` 里，外部编译单元无法仅凭这个头文件直接访问内部成员。这通常被称为 **opaque pointer（不透明指针）** 技巧。
 
-## 8. 可以自己动手检验的最小实验
+这说明封装并不是 `class` 专属。C 的边界主要由头文件、编译单元和调用纪律组织，而不是 Java 式对象访问控制。这里展示的是接口轮廓；完整的 C 实现还需要分配失败检查、容量管理与释放逻辑，不能把这个声明片段当成独立可运行程序。
 
-尝试 `o.amount=999` 和 `o._amount=999`，解释两者分别发生什么；再设计测试禁止已支付修改价格。
+## 到底什么是类、对象和封装？
 
-**预期观察与解释（未标明已运行的片段属于可复现实验建议）：** 只提供 getter 的 `amount` 赋值通常报 `AttributeError`；直接访问 `_amount` 仍可赋值。这说明 Python 封装依赖 API 与约定，不是安全边界。
+现在再给它们命名就不会显得突兀：
 
-实验的目标是反驳或支持一个具体论断，而非只看“程序有没有报错”。最好先写下你预计的输出或失败位置，再运行、比较和解释差异。遇到与预期不一致的结果，先记录语言版本、平台与编译参数，不要将环境差异直接归咎于语言语义。
+- **对象**是程序中具有身份或状态、可被操作的实体。这里 `order` 是某一笔实际订单。
+- **类**是 Python、Java、C++ 等语言中描述一类对象如何创建、保存状态和提供操作的机制。`Order` 描述的是订单的通用规则。
+- **封装**是对外公布稳定的操作边界，同时把可变的内部细节留在边界内。它的目的首先是保持约束、降低耦合，而不是绝对隐藏一切信息。
 
-## 9. 这个机制解决了什么，又没有解决什么？
+要是只有一个 20 行的脚本，原始字典可能就很好。只有当“多个地方修改同一业务状态”成为可观察的失败原因时，类的投入才真正值得。
 
-封装提高了状态一致性，但也可能导致大量无意义 getter/setter。只有需要维护真实约束时，添加访问边界才有明确价值。
+## 动手验证：两个最容易遗漏的旁路
 
-特别需要避免一个常见跳跃：引入新抽象不等于自动得到正确的业务规则。语言机制只能保证它承诺的性质；数据是否正确、调用方是否守约、异常时是否清理资源，仍然要依赖具体设计和测试。
+把完整 Python `Order` 类和下面测试代码放在同一文件运行：
 
-## 10. 把结论迁移到另外六门语言
+```python
+source = [100, 250]
+o = Order(source)
+source.append(999)
+assert o.total() == 350             # 外部原列表不能偷偷改内部状态
 
-C 通过不透明类型和头文件 API 设计可建立封装，C++/Java 有语言级访问控制，Rust/Go/Zig 使用模块与导出规则，Python 主要通过属性协议和约定。
+snapshot = o.items
+assert snapshot == (100, 250)
+o.pay()
+try:
+    o.add_item(50)
+except ValueError as e:
+    assert str(e) == "cannot change paid order"
+else:
+    raise AssertionError("should reject modification")
 
-到这里，我们应当可以不依赖本章使用的关键词，自己解释“没有它会失败在哪里”“它修改了哪些可观察行为”“下一层出现了什么问题”。这是掌握共同抽象的标准，不是能背出定义。
+assert o.items == (100, 250)
+print("order invariants preserved")
+```
 
-## 11. 本章实验清单与下一步
+这段测试没有声称对象永远不可能被恶意修改。它验证的是**我们公布的操作路径**和两个常见共享可变数据旁路，在预期用法下是否保持了不变量。
 
-- [ ] 独立敲出最小实现，解释每个变量承担什么责任。
-- [ ] 构造第二节的限制场景，记录预期现象。
-- [ ] 只做第四节的局部改动，比较行为发生了什么变化。
-- [ ] 打开第七节源码链接，定位本章最相关的入口，区分规范与实现。
-- [ ] 使用至少另一种语言复述同一问题与设计取舍。
+## 留给下一章的问题
 
+现在，一个 `Order` 类可以守住自己的状态。但如果折扣规则变成“普通会员不打折、VIP 九折、节假日另有满减”，难道我们要在 `Order` 里持续添加 `if is_vip`、`if holiday` 和 `if coupon` 吗？
 
-
-**自然留下的下一问：** 为什么要把数据与操作组织在一起？。
-
-[上一章：为什么一组字段还不足以表达一笔订单？](08-from-struct-to-object.md) · [下一章：为什么要把数据与操作组织在一起？](10-class-state-and-behavior.md)
+封装解决的是**谁可以改变订单状态**，并没有解决**不断变化的不同职责应该放在哪里**。这正是下一章引入组合的理由。

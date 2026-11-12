@@ -1,140 +1,260 @@
 ---
-title: "第 13 章｜为什么有时组合比扩展一个大类更合理？"
+title: "13｜为什么一个巨大的 Order 类会失控：从条件分支推导组合"
 sidebar_position: 13
-description: "从订单系统的一次具体失败出发，理解为什么有时组合比扩展一个大类更合理？，以及由此带来的语法、运行行为与设计取舍。"
+description: "在同一个订单系统中，让不断新增的计价规则逼出组合，并对照 CPython logging 的真实 Handler 组合实现。"
 slug: /programming-languages/13-composition-over-inheritance
 ---
 
-# 第 13 章：为什么有时组合比扩展一个大类更合理？
+# 为什么一个巨大的 `Order` 类会失控？
 
-> 本篇位置：**第 2 篇 · 数据和行为如何组织成对象？**。贯穿项目仍然是订单处理系统；我们只扩大解决问题需要的那一层，不突然引入所有高级机制。
+上一章我们把订单数据放进了 `Order`，让商品修改和支付都经过明确的方法。这个设计解决了支付后不能改价的问题。接下来业务部门提出了一个看似简单的要求：**普通会员按原价，VIP 会员打九折**。
 
-会员折扣、节日活动、优惠券同时作用于订单。把所有条件都放进 `Order.total()`，它会随着营销活动越来越难维护。
+对已经有 `Order.total()` 的系统来说，最直接的做法当然是加一个判断。先不要因为听过“组合优于继承”就急着创建抽象。我们先看看简单办法何时真的开始难用。
 
-## 1. 当前任务：先把能工作的最小程序摆出来
+## 只有一种折扣时，if 完全合理
 
-两个条件分支在早期很直观。如果系统永远只有固定两条规则，它没有明显缺陷。问题是营销方案由另一个团队频繁改变，订单的状态机却不应该跟着每次改动。
-
-**教学最小实现（不是任何仓库的原始源码）：**
+下面是一个独立的简化版订单，金额单位统一为“分”，避免在此章引入浮点货币误差：
 
 ```python
 class Order:
-    def total(self, amount, vip, coupon):
-        if vip: amount = amount * 90 // 100
-        if coupon: amount -= 20
+    def __init__(self, prices: list[int], vip: bool = False):
+        self.prices = list(prices)
+        self.vip = vip
+
+    def total(self) -> int:
+        amount = sum(self.prices)
+        if self.vip:
+            return amount * 90 // 100
         return amount
+
+assert Order([100, 250]).total() == 350
+assert Order([100, 250], vip=True).total() == 315
 ```
 
-这里要区分两件事：代码碰巧对给定输入产生结果，和代码已经定义清楚了对所有合法输入的行为。第一步只要求前者成立。我们保留这段朴素实现，因为它能作为后面所有变化的对照基线。
+当规则永远只有两种时，这段代码简单、易测试，也没有任何结构性错误。此时创建几十个策略类只会增加阅读成本。
 
-## 2. 给它一个新输入：旧设计在哪里失效？
+真正的问题出现在下一个需求：新增固定减 50 分的优惠券，而且会员折扣和优惠券可以同时使用。业务约定是**先享受会员折扣，再减优惠券，并且最终不能为负**。
 
-新活动改变的是计算策略，不是订单身份、付款状态。现在每次添加活动都必须改核心订单类，容易意外影响旧折扣顺序。失败条件是两个不同变化原因挤在同一个类里。
-
-**用于触发限制的代码／输入（实验场景，不伪称来自框架）：**
+有两种独立变化：会员身份、优惠方式。若继续在订单里维护所有组合，开发者必须回答每一种组合该走哪个分支；再加地区税率、运费、活动限制，判断很容易互相影响。
 
 ```python
-# 新需求：某活动只针对满 200 元的订单，且会员折扣顺序不同
-# 如果继续在 Order.total 中追加 if，规则与结算职责不断耦合
+# 一个逐渐走向失控的方向（概念性反例）
+if vip and coupon and holiday: ...
+elif vip and coupon: ...
+elif vip and holiday: ...
+elif coupon and holiday: ...
 ```
 
-如果只说“这种写法可扩展性不好”，读者无法判断是否真的需要复杂机制。这里必须明确指出，当前输入或运行条件改变了哪条假设、会发生什么可观察结果。请把这个失败条件记住，后面的抽象就是为它而来。
+问题不在 `if` 这个语法；条件判断是任何语言都需要的。真正的矛盾是：**订单生命周期变化和计价规则变化，开始集中挤在同一个模块里。** 一次促销改动，可能触碰原本稳定的支付状态代码；一次订单字段改动，也需要重新检查计价分支。
 
-## 3. 这一次究竟缺了什么能力？
+我们需要将这两个变化原因分开。
 
-把计价行为作为可以替换的组件，订单只负责交给它计算。这里首次使用组合与委托，但仍不强制抽象出一个接口。
+## 先尝试最小方案：把计价移出 Order
 
-我们并不推翻上一节的代码，而是保留其有效部分，只替换造成问题的最小局部。这样新机制的成本和收益才看得清：如果实际业务永远不会遇到这个失败场景，简单方案仍然可能是更好的选择。
-
-## 4. 加入一个必要机制：直接对照语法
-
-**教学化简后的改进实现：**
+甚至不必先定义接口。先写两个普通函数：
 
 ```python
-class RegularPrice:
-    def calculate(self, base): return base
+def regular(total_cents: int) -> int:
+    return total_cents
 
-class VipPrice:
-    def calculate(self, base): return base * 90 // 100
+def vip_10_percent_off(total_cents: int) -> int:
+    return total_cents * 90 // 100
+```
 
+订单无需知道“VIP”三个字，只需要知道把原价交给哪个计算函数：
+
+```python
 class Order:
-    def __init__(self, base, pricing):
-        self.base = base
+    def __init__(self, prices: list[int], pricing):
+        self.prices = list(prices)
         self.pricing = pricing
-    def total(self):
-        return self.pricing.calculate(self.base)
 
-print(Order(200, VipPrice()).total())  # 180
+    def total(self) -> int:
+        return self.pricing(sum(self.prices))
+
+assert Order([100, 250], regular).total() == 350
+assert Order([100, 250], vip_10_percent_off).total() == 315
 ```
 
-`Order` 保存一个计价组件并把具体计算委托给它。新增 `FestivalPrice` 可以不修改 `Order.total()`，前提是新组件遵循 `calculate(base)` 的约定。组合不是“任何地方都要多套一层类”。
+注意我们实际改动了什么：
 
-这段语法并不是孤立的记忆材料。每一个新增符号都应该能对应到上节的明确需求。请留意输入怎样传入、状态怎样变化、输出由谁接收；遇到新术语，先把它翻译回程序实际做了什么。
+1. 原先 `Order.total()` 自己判断会员身份，现在只负责计算原价，并调用已有的计算函数。
+2. 计价行为以参数 `pricing` 的形式从外部传入，订单不再创建或选择具体计价方法。
+3. 两个订单实例可以持有不同的函数，调用处不必写 `if order.vip`。
 
-## 5. 手工追踪一遍：输入、状态、输出
+这就是一个十分轻量的**组合与委托**：组合表示把已有的不同能力组织在一个对象中；委托表示某项工作由其中被持有的组件完成。这里的组件甚至可以是函数。
 
-调用 `Order(200,VipPrice()).total()` 时，先从订单取得 `base=200` 与 `pricing`，再执行 `VipPrice.calculate(200)` 返回 `180`，订单将这个结果原样返回。业务规则的变化位置清晰地移到了计价组件。
+不用立刻创造一个 `PricingFactory` 或 `AbstractPricingService`。只有当最小结构不够表达需求时才继续扩展。
 
-建议读者实际拿纸记录三列：**当前输入 / 当前保存的信息 / 本步之后的结果**。如果一个概念不能通过这三列解释其主要作用，我们暂时还没有把它讲透。对于编译器或运行时主题，第三列也可以换成生成的中间结构、调度动作或外部副作用。
+## 当计价需要自身配置时，让函数升级为对象
 
-## 6. 换一种语言写：哪些是语法差异，哪些是语义差异？
+现在优惠券有一个配置：减免多少分。有时是 50，有时是 80。我们当然可以写闭包，但如果配置项越来越多，一个专门保存规则参数的对象可能更清楚。
 
-C++ 可以在不使用继承的情况下，用函数对象实现组合。
+```python
+class FixedOff:
+    def __init__(self, discount_cents: int):
+        if discount_cents < 0:
+            raise ValueError("negative discount")
+        self.discount_cents = discount_cents
 
-**C++ 示例（教学代码，非所引用仓库的源码节选）：**
+    def __call__(self, amount_cents: int) -> int:
+        return max(0, amount_cents - self.discount_cents)
+```
 
-```cpp
-struct VipPrice {
-    long operator()(long amount) const { return amount * 90 / 100; }
-};
-template<class Price>
-long total(long amount, Price price) {
-    return price(amount);
+因为 Python 对象可以实现 `__call__`，它能够像函数一样被 `Order.total()` 使用：
+
+```python
+assert Order([100, 250], FixedOff(50)).total() == 300
+```
+
+这一步解决的不是“对象比函数高级”，而是**计价规则现在既有行为，也有需要长期保存的配置**。如若只有单个不变规则，普通函数仍然更合适。
+
+接下来需要同时使用会员折扣和优惠券。直觉上可以给 `Order` 加一个 `vip_and_coupon` 分支，但那会把分离出来的职责又放回订单里。更简单的办法是让多个计价动作按业务指定顺序依次执行。
+
+```python
+class PricingPipeline:
+    def __init__(self, steps):
+        self.steps = tuple(steps)
+
+    def __call__(self, amount_cents: int) -> int:
+        for step in self.steps:
+            amount_cents = step(amount_cents)
+        return amount_cents
+
+pricing = PricingPipeline([
+    vip_10_percent_off,
+    FixedOff(50),
+])
+assert Order([100, 250], pricing).total() == 265
+```
+
+按手工执行来看：
+
+| 阶段 | 输入（分） | 操作 | 输出（分） |
+| --- | ---: | --- | ---: |
+| 计算原价 | 100 + 250 | 累加 | 350 |
+| 会员折扣 | 350 | `350 * 90 // 100` | 315 |
+| 优惠券 | 315 | `max(0, 315-50)` | 265 |
+
+这时候最重要的并不是多了一个 `PricingPipeline` 类，而是订单的代码**没有随着折扣的组合变化而变化**：我们把可变的计价部分组织在订单外部，再把整个计价动作交给订单使用。
+
+这个结构也有边界：折扣的顺序会影响价格，必须明确为业务规则；`int` 的金额模型只适合我们目前约定的整数分处理；计价不是实际支付，更没有包含税务、财务对账或并发一致性。
+
+## 为什么不用继承来造 VIPOrder？
+
+很容易想到下面这种写法：
+
+```python
+class VipOrder(Order):
+    def total(self):
+        return super().total() * 90 // 100
+```
+
+但这段代码在我们当前版本里甚至不符合设计：父类 `total()` 已经根据传入的计价方法算出了结果，子类再打折可能造成**重复折扣**。为了让继承工作，我们不得不重新改造父类的行为契约。
+
+更根本的麻烦是，VIP 身份是订单的一个**可变业务属性或计价政策**，不必然构成“订单本体类型”的派生关系。未来如果需要“VIP + 优惠券 + 节假日”，用子类表达组合可能导致大量交叉派生类型，或需要在各个子类中重写行为。
+
+所以“组合优于继承”不该被理解为“永远禁止继承”。准确表达是：当多个职责可以独立变化、需要任意替换和组合时，优先考虑明确的组件关系；只有确实存在稳定的可替换类型关系、并能保持父类型的行为承诺时，继承才是合理选项。
+
+## 真实源码里，组合是否也这么简单？
+
+为了验证这不是教学玩具，我们暂时离开订单业务，观察一个非常常见的真实系统：Python 标准库的日志记录器。
+
+我们要解决的任务很具体：同一条日志既要输出到终端，也要写入另一个目标。最笨的办法是在 `Logger` 里写 `if to_console` 和 `if to_file`；每增加一个输出目标，就修改 Logger。
+
+CPython `v3.13.5` 的 `Lib/logging/__init__.py` 采取的是不同的结构：`Logger` 持有一组 handler；记录产生之后，遍历符合条件的 handler，让各自处理记录。这与我们让 `Order` 持有计价函数、让 `PricingPipeline` 持有若干步骤的方式十分接近。
+
+固定源码：[CPython v3.13.5 — Lib/logging/__init__.py](https://github.com/python/cpython/blob/v3.13.5/Lib/logging/__init__.py)。可以对照 `Logger.addHandler`（约第 1563 行）和 `Logger.callHandlers`（约第 1598 行）。
+
+**真实源码节选 A：** `Logger.addHandler` 在锁内避免重复注册，再将处理器加入列表：
+
+```python
+with _lock:
+    if not (hdlr in self.handlers):
+        self.handlers.append(hdlr)
+```
+
+这里的 `self.handlers` 就是组合关系在实际对象状态中的体现。`Logger` 不必变成 `FileLogger`、`ConsoleLogger` 或 `FileAndConsoleLogger` 的子类才能拥有多个输出能力。
+
+**真实源码节选 B：** `Logger.callHandlers` 中的核心分派片段为：
+
+```python
+for hdlr in c.handlers:
+    if record.levelno >= hdlr.level:
+        hdlr.handle(record)
+```
+
+当前的 `c` 从这个 logger 开始，还可能沿 logger 层级向父级传播。上面的节选省略了层级遍历、`propagate` 和兜底处理，我们这里只研究**一条日志交给多个组件**的路径，不把它误解成 logging 的全部机制。
+
+一条简化的调用链是：
+
+```text
+用户调用 logger.info("order_paid")
+       ↓
+Logger 创建 LogRecord 并进入 handle
+       ↓
+callHandlers 遍历当前 logger 的 Handler
+       ↓
+每个符合级别条件的 Handler.handle(record)
+       ↓
+具体 Handler 执行输出或其他操作
+```
+
+这是**调用链**，不是对象的继承树。`Logger` 负责组织与分派，具体 `Handler` 负责处理。源码证据支持的结论很明确：一个核心对象持有多个可协作组件，不需要将每种输出组合硬编码成新子类。
+
+## 把真实源码缩成能运行的实验
+
+下面使用真实 `logging` 标准库，不需要密钥或网络。两段内存缓冲区模拟两个独立输出目标：
+
+```python
+import io
+import logging
+
+left = io.StringIO()
+right = io.StringIO()
+
+logger = logging.getLogger("course.composition.demo")
+logger.handlers.clear()
+logger.propagate = False
+logger.setLevel(logging.INFO)
+logger.addHandler(logging.StreamHandler(left))
+logger.addHandler(logging.StreamHandler(right))
+
+logger.info("order_paid=42")
+assert left.getvalue().strip() == "order_paid=42"
+assert right.getvalue().strip() == "order_paid=42"
+print("same record reached two handlers")
+```
+
+一个调用引起两个输出结果，但 `logger.info(...)` 完全没有意识到具体有两个 `StringIO`。这就是组合的运行效果。请注意：示例中 `handlers.clear()` 只为让独立演示更可重复；真实应用不建议随意清空共享 logger 的处理器配置。
+
+## 和 Go/C 的写法有什么关系？
+
+即使语言没有 Python 式“可调用对象”，也能达到相同的协作目的。在 Go 中，可以把一段计价行为作为函数值保存到结构体字段里：
+
+```go
+package main
+import "fmt"
+
+type PricingFunc func(int64) int64
+
+type Order struct {
+    Amount  int64
+    Pricing PricingFunc
+}
+func (o Order) Total() int64 { return o.Pricing(o.Amount) }
+func main() {
+    vip := func(x int64) int64 { return x * 90 / 100 }
+    fmt.Println((Order{Amount: 350, Pricing: vip}).Total()) // 315
 }
 ```
 
-C++ 通过模板在编译期接受符合调用要求的函数对象；Python 则在运行时动态查找 `calculate`。二者都体现“订单委托另一个组件完成计价”，但分派与编译方式不同。
+C 也有函数指针，C++ 有可调用对象和 `std::function`，Rust 能使用函数、闭包和 trait 等方式，Zig 可以用显式函数参数或泛型组合。它们不需要先拥有完全相同的 class 语法，才能解决“一个对象委托另一个组件完成工作”的问题。
 
-我们比较的不是哪门语言“更高级”。先标出两段代码共同保证的行为，再找出各自额外承担的责任，例如存储期、错误传播、类型检查、运行时分派或资源清理。不能仅凭表面语法推断性能；性能结论需要固定实现、优化参数和输入数据后测量。
+## 组合解决了什么，留下什么问题？
 
-## 7. 走进真实实现：固定版本，应该核对哪段源码？
+此刻我们已经解决：订单不直接编码所有计价分支；一个组合可以按照规则串联多个计价步骤；新增定价方式通常不需要修改 `Order.total()`。
 
-**源码阅读入口：** [Python 3.13 属性查找、对象调用规则](https://docs.python.org/3.13/reference/)。
+但代码仍有一个明显漏洞。`Order` 接收的是任何 `pricing`，我们没有声明这个组件**必须能够接收整数金额并返回整数金额**。传入 `pricing=123` 时，只会在调用现场出现 `TypeError`。在 Python 的动态语义里这是合理的，但如果系统很大，我们会希望更早、更明确地知道组件是否符合要求。
 
-从 `pricing.calculate` 的属性访问和调用规则追踪行为；下一篇再研究接口契约与动态分派，当前不要把 “has-a” 和 “is-a” 混为一谈。
-
-本节的源码链接用于**核对真实实现**；前面标为“教学”的代码都是作者为了建立直觉而写的最小样例，不冒充仓库源代码。除非明确提供某个版本、文件和逐字一致的节选，否则不把概念伪代码写成“真实源码”。规范规定的行为、具体实现的实现细节和我们的教学模型应当保持区分。
-
-## 8. 可以自己动手检验的最小实验
-
-自行加入 `FestivalPrice`，规则为满 200 减 30，并用同一个订单总额方法得到 170；确认无需编辑 `Order.total()`。
-
-**预期观察与解释（未标明已运行的片段属于可复现实验建议）：** 将计价对象替换后，外部订单类保持不变，结果随策略改变。这个实验验证的是变化点分离，不是某种性能提升。
-
-实验的目标是反驳或支持一个具体论断，而非只看“程序有没有报错”。最好先写下你预计的输出或失败位置，再运行、比较和解释差异。遇到与预期不一致的结果，先记录语言版本、平台与编译参数，不要将环境差异直接归咎于语言语义。
-
-## 9. 这个机制解决了什么，又没有解决什么？
-
-组合让替换更容易，也带来额外对象和间接调用。如果计价永远只有一个稳定规则，直接函数更简单。
-
-特别需要避免一个常见跳跃：引入新抽象不等于自动得到正确的业务规则。语言机制只能保证它承诺的性质；数据是否正确、调用方是否守约、异常时是否清理资源，仍然要依赖具体设计和测试。
-
-## 10. 把结论迁移到另外六门语言
-
-Java/C++ 可能用对象持有接口实现，Rust 用泛型或 trait object，Go 用 interface 字段，Zig 用显式函数表或 comptime，C 用函数指针。共同需求是把变化放在独立组件里。
-
-到这里，我们应当可以不依赖本章使用的关键词，自己解释“没有它会失败在哪里”“它修改了哪些可观察行为”“下一层出现了什么问题”。这是掌握共同抽象的标准，不是能背出定义。
-
-## 11. 本章实验清单与下一步
-
-- [ ] 独立敲出最小实现，解释每个变量承担什么责任。
-- [ ] 构造第二节的限制场景，记录预期现象。
-- [ ] 只做第四节的局部改动，比较行为发生了什么变化。
-- [ ] 打开第七节源码链接，定位本章最相关的入口，区分规范与实现。
-- [ ] 使用至少另一种语言复述同一问题与设计取舍。
-
-
-
-**自然留下的下一问：** 为什么函数也能作为数据传递？。
-
-[上一章：为什么一个对象会引用另一个对象？](12-object-references.md) · [下一章：为什么函数也能作为数据传递？](14-functions-as-values.md)
+下一章不急着介绍某门语言的 `interface` 关键字，而是从这个具体问题开始：**多个实现既然要彼此替换，它们究竟应该共同承诺什么？**
