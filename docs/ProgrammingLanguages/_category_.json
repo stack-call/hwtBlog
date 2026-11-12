@@ -1,0 +1,9 @@
+{
+  "label": "编程语言原理",
+  "position": 22,
+  "link": {
+    "type": "generated-index",
+    "slug": "/category/programming-languages",
+    "description": "一条主线理解七门编程语言：从订单程序的一次失败出发，逐层长出函数、对象、接口、类型、内存管理、编译执行、系统交互与并发模型。"
+  }
+}
