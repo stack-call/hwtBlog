@@ -1,0 +1,9 @@
+{
+  "label": "Rust 语言设计",
+  "position": 23,
+  "link": {
+    "type": "generated-index",
+    "slug": "/category/rust-design",
+    "description": "从资源管理难题推出所有权，再追踪它如何影响 API、数据结构、Trait、并发、异步、unsafe 与编译器实现：10 篇 40 章，一条因果链而不是语法表。"
+  }
+}
