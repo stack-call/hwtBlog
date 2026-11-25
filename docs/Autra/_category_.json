@@ -1,0 +1,9 @@
+{
+  "label": "Autra（个人 Agent 框架设计）",
+  "position": 24,
+  "link": {
+    "type": "generated-index",
+    "slug": "/category/autra",
+    "description": "Autra 是一个用 Rust 编写的个人 Agent Runtime。这个系列记录它的设计推导：状态机与副作用如何分离、任务与进程/Sandbox 的生命周期如何解耦，以及每个机制解决了哪个真实限制。"
+  }
+}
