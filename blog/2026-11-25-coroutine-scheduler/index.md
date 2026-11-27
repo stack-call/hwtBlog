@@ -292,6 +292,47 @@ async fn parent() {
 | `tokio::spawn(child())` | 是 | Runtime 独立调度子 Task |
 | `std::thread::spawn(...)` | 不适用 | 创建 OS 线程 |
 
+:::tip 一句话区分 await 与 spawn
+
+**`await` 是当前协程的潜在挂起点（Suspension Point），而不是创建新协程任务的地方。** 之所以说「潜在」，是因为 `await` 不一定触发调度。
+
+```rust
+async fn task_a() {
+    step1();
+
+    request().await;   // 潜在挂起点 ①
+
+    step2();
+
+    read_file().await; // 潜在挂起点 ②
+
+    step3();
+}
+```
+
+执行到 `await` 时有两种情况：
+
+- 内部 Future 返回 `Ready`：直接继续执行，没有发生切换。
+- 内部 Future 返回 `Pending`：当前 Future 挂起；如果整个 Task 也无法继续，`poll()` 返回 `Pending`，线程控制权交还给调度器。
+
+而 `tokio::spawn(task_a())` 做的是另一件事：它把 Future 交给 Runtime，创建一个**可以独立调度的 Task**。spawn 创建调度单位，await 只是提供可以暂停的位置。
+
+| 概念 | 含义 |
+| --- | --- |
+| `async` | 定义可暂停、可恢复的计算 |
+| `spawn` | 创建独立调度单位 |
+| `await` | 潜在挂起点 |
+| `Pending` | 归还执行控制权 |
+| `Waker` | 通知任务可以重新调度 |
+| `Scheduler` | 选择下一个执行的 Task |
+| `Thread` | 实际执行代码 |
+
+这也是为什么 Autra 中即使有很多层 `async/await`，也不代表有很多独立协程任务。
+
+**spawn 决定什么可以被独立调度，await 提供什么时候可以暂停执行的位置，Scheduler 决定接下来执行谁。**
+
+:::
+
 所以，async 函数有多少个、Task 有多少个、OS 线程有多少条，是三个不同的问题。
 
 ## 9. 多线程 Tokio：没有必要设置一个中央调度线程
