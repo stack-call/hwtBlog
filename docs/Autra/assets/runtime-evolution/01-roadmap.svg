@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="380" viewBox="0 0 920 380" role="img" aria-label="六阶段演化：等待逐步脱离执行资源">
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#68798A"/></marker></defs>
+<rect width="920" height="380" rx="18" fill="#FFFFFF" stroke="#DBE2E9"/>
+<g font-family="Noto Sans CJK SC, Microsoft YaHei, PingFang SC, sans-serif" fill="#182D43">
+<text x="30" y="34" text-anchor="start" font-size="23" font-weight="600" fill="#182D43">六阶段演化：等待逐步脱离执行资源</text>
+<text x="30" y="61" text-anchor="start" font-size="14" font-weight="400" fill="#536477">已实现的能力与未来设计分开标注；不是官方版本编号。</text>
+<rect x="30" y="92" width="274" height="81" rx="9" fill="#EAF0FF" stroke="#365DAD" stroke-width="1.2"/>
+<text x="167.0" y="129.5" text-anchor="middle" font-size="16" font-weight="600" fill="#365DAD">01 线程复用</text>
+<text x="167.0" y="150.5" text-anchor="middle" font-size="13" font-weight="400" fill="#365DAD">等待 I/O 不占线程</text>
+<text x="167" y="197" text-anchor="middle" font-size="13" font-weight="400" fill="#536477">已实现</text>
+<path d="M304 132 L322 132" fill="none" stroke="#68798A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="322" y="92" width="274" height="81" rx="9" fill="#EAF0FF" stroke="#365DAD" stroke-width="1.2"/>
+<text x="459.0" y="129.5" text-anchor="middle" font-size="16" font-weight="600" fill="#365DAD">02 容量与阻塞隔离</text>
+<text x="459.0" y="150.5" text-anchor="middle" font-size="13" font-weight="400" fill="#365DAD">有许可才执行</text>
+<text x="459" y="197" text-anchor="middle" font-size="13" font-weight="400" fill="#536477">已实现（部分隔离）</text>
+<path d="M596 132 L614 132" fill="none" stroke="#68798A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="614" y="92" width="274" height="81" rx="9" fill="#EAF0FF" stroke="#365DAD" stroke-width="1.2"/>
+<text x="751.0" y="129.5" text-anchor="middle" font-size="16" font-weight="600" fill="#365DAD">03 独立 Executor</text>
+<text x="751.0" y="150.5" text-anchor="middle" font-size="13" font-weight="400" fill="#365DAD">执行脱离调用链</text>
+<text x="751" y="197" text-anchor="middle" font-size="13" font-weight="400" fill="#536477">已实现</text>
+<rect x="30" y="232" width="274" height="81" rx="9" fill="#EAF0FF" stroke="#365DAD" stroke-width="1.2"/>
+<text x="167.0" y="269.5" text-anchor="middle" font-size="16" font-weight="600" fill="#365DAD">04 事件唤醒</text>
+<text x="167.0" y="290.5" text-anchor="middle" font-size="13" font-weight="400" fill="#365DAD">减少空闲检查</text>
+<text x="167" y="337" text-anchor="middle" font-size="13" font-weight="400" fill="#536477">已实现</text>
+<path d="M304 272 L322 272" fill="none" stroke="#68798A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="322" y="232" width="274" height="81" rx="9" fill="#F1EAFE" stroke="#7445AA" stroke-width="1.2"/>
+<text x="459.0" y="269.5" text-anchor="middle" font-size="16" font-weight="600" fill="#7445AA">05 按需 Effect 执行</text>
+<text x="459.0" y="290.5" text-anchor="middle" font-size="13" font-weight="400" fill="#7445AA">有容量才创建任务</text>
+<text x="459" y="337" text-anchor="middle" font-size="13" font-weight="400" fill="#536477">未来方向</text>
+<path d="M596 272 L614 272" fill="none" stroke="#68798A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="614" y="232" width="274" height="81" rx="9" fill="#F1EAFE" stroke="#7445AA" stroke-width="1.2"/>
+<text x="751.0" y="269.5" text-anchor="middle" font-size="16" font-weight="600" fill="#7445AA">06 Run 按需激活</text>
+<text x="751.0" y="290.5" text-anchor="middle" font-size="13" font-weight="400" fill="#7445AA">无事件则释放协程</text>
+<text x="751" y="337" text-anchor="middle" font-size="13" font-weight="400" fill="#536477">未来方向</text>
+<path d="M888 132 H902 V222 H15 V272 H30" fill="none" stroke="#68798A" stroke-width="1.5" marker-end="url(#arrow)"/>
+</g></svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="383" viewBox="0 0 920 383" role="img" aria-label="执行生命周期：Inline → 独立 Executor">
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#68798A"/></marker></defs>
+<rect width="920" height="383" rx="18" fill="#FFFFFF" stroke="#DBE2E9"/>
+<g font-family="Noto Sans CJK SC, Microsoft YaHei, PingFang SC, sans-serif" fill="#182D43">
+<text x="30" y="34" text-anchor="start" font-size="23" font-weight="600" fill="#182D43">执行生命周期：Inline → 独立 Executor</text>
+<text x="30" y="61" text-anchor="start" font-size="14" font-weight="400" fill="#536477">独立调度本身不等于可靠性，权威工作与结果需要持久化。</text>
+<text x="230" y="94" text-anchor="middle" font-size="18" font-weight="600" fill="#182D43">Inline（仍为默认）</text>
+<rect x="55" y="110" width="350" height="46" rx="9" fill="#EAF0FF" stroke="#365DAD" stroke-width="1.2"/>
+<text x="230.0" y="138.0" text-anchor="middle" font-size="16" font-weight="600" fill="#365DAD">Coordinator Future</text>
+<path d="M230 156 L230 181" fill="none" stroke="#68798A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="80" y="181" width="300" height="51" rx="9" fill="#F1EAFE" stroke="#7445AA" stroke-width="1.2"/>
+<text x="230.0" y="203.5" text-anchor="middle" font-size="16" font-weight="600" fill="#7445AA">Executor Future</text>
+<text x="230.0" y="224.5" text-anchor="middle" font-size="13" font-weight="400" fill="#7445AA">嵌套 await</text>
+<path d="M230 232 L230 254" fill="none" stroke="#68798A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="105" y="254" width="250" height="53" rx="9" fill="#EDF1F5" stroke="#536477" stroke-width="1.2"/>
+<text x="230.0" y="285.5" text-anchor="middle" font-size="16" font-weight="600" fill="#536477">Model / Tool Future</text>
+<text x="230" y="343" text-anchor="middle" font-size="14" font-weight="400" fill="#182D43">父 Future 被 drop 时，嵌套 Future 也被 drop</text>
+<text x="690" y="94" text-anchor="middle" font-size="18" font-weight="600" fill="#182D43">Pooled（可选）</text>
+<rect x="508" y="110" width="180" height="55" rx="9" fill="#EAF0FF" stroke="#365DAD" stroke-width="1.2"/>
+<text x="598.0" y="134.5" text-anchor="middle" font-size="16" font-weight="600" fill="#365DAD">Coordinator</text>
+<text x="598.0" y="155.5" text-anchor="middle" font-size="13" font-weight="400" fill="#365DAD">Run Future</text>
+<rect x="708" y="110" width="180" height="55" rx="9" fill="#F1EAFE" stroke="#7445AA" stroke-width="1.2"/>
+<text x="798.0" y="134.5" text-anchor="middle" font-size="16" font-weight="600" fill="#7445AA">Executor</text>
+<text x="798.0" y="155.5" text-anchor="middle" font-size="13" font-weight="400" fill="#7445AA">独立 Task</text>
+<path d="M598 165 V191 H690 V208" fill="none" stroke="#68798A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M798 165 V191 H690 V208" fill="none" stroke="#68798A" stroke-width="1.5" marker-end="url(#arrow)"/>
+<rect x="508" y="208" width="380" height="65" rx="9" fill="#E5F4EF" stroke="#167B68" stroke-width="1.2"/>
+<text x="698.0" y="237.5" text-anchor="middle" font-size="16" font-weight="600" fill="#167B68">Durable Journal</text>
+<text x="698.0" y="258.5" text-anchor="middle" font-size="13" font-weight="400" fill="#167B68">Outbox / Result Inbox</text>
+<text x="698" y="308" text-anchor="middle" font-size="14" font-weight="400" fill="#182D43">通过持久化事实交换工作和结果</text>
+<text x="698" y="333" text-anchor="middle" font-size="13" font-weight="400" fill="#182D43">可完成已提交工作；进程退出仍需恢复协议</text>
+</g></svg>

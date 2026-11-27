@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="330" viewBox="0 0 920 330" role="img" aria-label="同一负载下的主要异步执行单元（理论）">
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#68798A"/></marker></defs>
+<rect width="920" height="330" rx="18" fill="#FFFFFF" stroke="#DBE2E9"/>
+<g font-family="Noto Sans CJK SC, Microsoft YaHei, PingFang SC, sans-serif" fill="#182D43">
+<text x="30" y="34" text-anchor="start" font-size="23" font-weight="600" fill="#182D43">同一负载下的主要异步执行单元（理论）</text>
+<text x="30" y="61" text-anchor="start" font-size="14" font-weight="400" fill="#536477">10,000 未完成 Run；假设未来 100 Effect 执行位、100 激活位、集中 Lease。</text>
+<text x="30" y="115" text-anchor="start" font-size="15" font-weight="400" fill="#182D43">Inline</text>
+<rect x="290" y="94" width="510" height="27" rx="5" fill="#EDF1F5"/><rect x="290" y="94" width="340.0" height="27" rx="4" fill="#536477"/>
+<text x="885" y="114" text-anchor="end" font-size="16" font-weight="600" fill="#182D43">20,000</text>
+<text x="30" y="165" text-anchor="start" font-size="15" font-weight="400" fill="#182D43">Per-Run Pooled（当前）</text>
+<rect x="290" y="144" width="510" height="27" rx="5" fill="#EDF1F5"/><rect x="290" y="144" width="510.0" height="27" rx="4" fill="#365DAD"/>
+<text x="885" y="164" text-anchor="end" font-size="16" font-weight="600" fill="#182D43">30,000</text>
+<text x="30" y="215" text-anchor="start" font-size="15" font-weight="400" fill="#182D43">Shared Executor</text>
+<rect x="290" y="194" width="510" height="27" rx="5" fill="#EDF1F5"/><rect x="290" y="194" width="171.7" height="27" rx="4" fill="#7445AA"/>
+<text x="885" y="214" text-anchor="end" font-size="16" font-weight="600" fill="#182D43">10,100</text>
+<text x="30" y="265" text-anchor="start" font-size="15" font-weight="400" fill="#182D43">Activation</text>
+<rect x="290" y="244" width="510" height="27" rx="5" fill="#EDF1F5"/><rect x="290" y="244" width="3.4" height="27" rx="4" fill="#167B68"/>
+<text x="885" y="264" text-anchor="end" font-size="16" font-weight="600" fill="#182D43">200</text>
+<text x="30" y="310" text-anchor="start" font-size="14" font-weight="400" fill="#182D43">不计固定管理 Task、子任务和调用方等待 Future；不是 Task profiler 实测。</text>
+</g></svg>

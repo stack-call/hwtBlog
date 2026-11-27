@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="342" viewBox="0 0 920 342" role="img" aria-label="从定时轮询到事件唤醒">
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#68798A"/></marker></defs>
+<rect width="920" height="342" rx="18" fill="#FFFFFF" stroke="#DBE2E9"/>
+<g font-family="Noto Sans CJK SC, Microsoft YaHei, PingFang SC, sans-serif" fill="#182D43">
+<text x="30" y="34" text-anchor="start" font-size="23" font-weight="600" fill="#182D43">从定时轮询到事件唤醒</text>
+<text x="30" y="61" text-anchor="start" font-size="14" font-weight="400" fill="#536477">示意时间轴；橙色 = 空检查，绿色 = 有效事件，灰色 = 低频兜底。</text>
+<text x="30" y="94" text-anchor="start" font-size="16" font-weight="600" fill="#182D43">初版：20 ms 周期轮询</text>
+<text x="30" y="119" text-anchor="start" font-size="13" font-weight="400" fill="#182D43">Run 1</text>
+<path d="M118 115 L880 115" fill="none" stroke="#68798A" stroke-width="1.5"/>
+<rect x="122" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="149" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="176" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="203" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="230" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="257" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="284" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="311" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="338" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="365" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="392" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="419" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="446" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="473" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="500" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="527" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="554" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="581" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="608" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="635" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="662" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="689" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="716" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="743" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="770" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="797" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="824" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="851" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="878" y="104" width="5" height="22" rx="2" fill="#AE691B"/>
+<text x="30" y="147" text-anchor="start" font-size="13" font-weight="400" fill="#182D43">Run 2</text>
+<path d="M118 143 L880 143" fill="none" stroke="#68798A" stroke-width="1.5"/>
+<rect x="122" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="149" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="176" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="203" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="230" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="257" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="284" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="311" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="338" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="365" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="392" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="419" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="446" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="473" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="500" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="527" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="554" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="581" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="608" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="635" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="662" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="689" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="716" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="743" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="770" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="797" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="824" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="851" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="878" y="132" width="5" height="22" rx="2" fill="#AE691B"/>
+<text x="30" y="175" text-anchor="start" font-size="13" font-weight="400" fill="#182D43">Run 3</text>
+<path d="M118 171 L880 171" fill="none" stroke="#68798A" stroke-width="1.5"/>
+<rect x="122" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="149" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="176" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="203" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="230" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="257" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="284" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="311" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="338" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="365" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="392" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="419" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="446" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="473" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="500" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="527" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="554" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="581" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="608" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="635" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="662" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="689" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="716" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="743" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="770" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="797" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="824" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="851" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<rect x="878" y="160" width="5" height="22" rx="2" fill="#AE691B"/>
+<text x="30" y="220" text-anchor="start" font-size="16" font-weight="600" fill="#182D43">当前：Notify + 1 s 共享恢复时钟</text>
+<text x="30" y="245" text-anchor="start" font-size="13" font-weight="400" fill="#182D43">Run 1</text>
+<path d="M118 241 L880 241" fill="none" stroke="#68798A" stroke-width="1.5"/>
+<rect x="123" y="230" width="5" height="22" rx="2" fill="#9AA7B4"/>
+<rect x="480" y="230" width="5" height="22" rx="2" fill="#9AA7B4"/>
+<rect x="875" y="230" width="5" height="22" rx="2" fill="#9AA7B4"/>
+<rect x="240" y="228" width="10" height="26" rx="3" fill="#167B68"/>
+<text x="30" y="273" text-anchor="start" font-size="13" font-weight="400" fill="#182D43">Run 2</text>
+<path d="M118 269 L880 269" fill="none" stroke="#68798A" stroke-width="1.5"/>
+<rect x="123" y="258" width="5" height="22" rx="2" fill="#9AA7B4"/>
+<rect x="480" y="258" width="5" height="22" rx="2" fill="#9AA7B4"/>
+<rect x="875" y="258" width="5" height="22" rx="2" fill="#9AA7B4"/>
+<rect x="405" y="256" width="10" height="26" rx="3" fill="#167B68"/>
+<text x="30" y="301" text-anchor="start" font-size="13" font-weight="400" fill="#182D43">Run 3</text>
+<path d="M118 297 L880 297" fill="none" stroke="#68798A" stroke-width="1.5"/>
+<rect x="123" y="286" width="5" height="22" rx="2" fill="#9AA7B4"/>
+<rect x="480" y="286" width="5" height="22" rx="2" fill="#9AA7B4"/>
+<rect x="875" y="286" width="5" height="22" rx="2" fill="#9AA7B4"/>
+<rect x="570" y="284" width="10" height="26" rx="3" fill="#167B68"/>
+<text x="30" y="328" text-anchor="start" font-size="15" font-weight="400" fill="#182D43">共享时钟不等于共享查询：当前仍会触发逐 Run 的恢复检查。</text>
+</g></svg>
